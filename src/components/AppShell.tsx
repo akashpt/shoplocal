@@ -7,11 +7,21 @@ type AppShellProps = {
   onNavigate: (page: PageId) => void
 }
 
-const navItems: Array<{ id: PageId; label: string }> = [
+const mainNavItems: Array<{ id: PageId; label: string }> = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'inventory', label: 'Inventory' },
   { id: 'orders', label: 'Orders' },
   { id: 'offers', label: 'Offers' },
+]
+
+const financeNavItems: Array<{ id: PageId; label: string }> = [
+  { id: 'orders', label: 'Expenses' },
+  { id: 'offers', label: 'Invoices' },
+]
+
+const accountNavItems: Array<{ id: PageId; label: string }> = [
+  { id: 'inventory', label: 'Manage Shops' },
+  { id: 'offers', label: 'Settings' },
 ]
 
 export function AppShell({ activePage, children, onNavigate }: AppShellProps) {
@@ -19,40 +29,107 @@ export function AppShell({ activePage, children, onNavigate }: AppShellProps) {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand">
-          <span className="brand-mark">SL</span>
+          <span className="brand-mark">🛍️</span>
           <div>
             <strong>ShopLocal</strong>
-            <small>Merchant Studio</small>
+            <small>Store Open</small>
+            <div className="brand-status">
+              <span className="brand-status-dot"></span>
+              <span>Store Open</span>
+            </div>
           </div>
         </div>
 
-        <nav className="nav-list" aria-label="Main navigation">
-          {navItems.map((item) => (
-            <button
-              className={item.id === activePage ? 'nav-item active' : 'nav-item'}
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              type="button"
-            >
-              {item.label}
-            </button>
-          ))}
+        <nav aria-label="Main navigation">
+          <div className="nav-section">
+            <div className="nav-section-label">MAIN</div>
+            <div className="nav-list">
+              {mainNavItems.map((item) => (
+                <button
+                  className={item.id === activePage ? 'nav-item active' : 'nav-item'}
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="nav-section">
+            <div className="nav-section-label">FINANCES</div>
+            <div className="nav-list">
+              {financeNavItems.map((item) => (
+                <button
+                  className={item.id === activePage ? 'nav-item active' : 'nav-item'}
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="nav-section">
+            <div className="nav-section-label">ACCOUNT</div>
+            <div className="nav-list">
+              {accountNavItems.map((item) => (
+                <button
+                  className={item.id === activePage ? 'nav-item active' : 'nav-item'}
+                  key={item.id}
+                  onClick={() => onNavigate(item.id)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </nav>
+
+        <button className="open-pos-button" type="button">
+          Open POS Counter
+        </button>
       </aside>
 
       <main className="content-area">
         <header className="topbar">
-          <div>
-            <p className="eyebrow">Local commerce</p>
+          <div className="topbar-left">
             <h1>{navItems.find((item) => item.id === activePage)?.label}</h1>
           </div>
-          <button className="primary-action" type="button">
-            New listing
-          </button>
+          <div className="topbar-right">
+            <div className="action-buttons">
+              <button className="action-button" type="button">
+                Add Product
+              </button>
+              <button className="action-button" type="button">
+                Add Expense
+              </button>
+              <button className="action-button primary" type="button">
+                Create Offer
+              </button>
+            </div>
+            <button className="notification-icon" type="button" aria-label="Notifications">
+              🔔
+            </button>
+            <div className="user-avatar">AM</div>
+          </div>
         </header>
 
-        {children}
+        <div className="page-content">
+          {children}
+        </div>
       </main>
     </div>
   )
 }
+
+const navItems: Array<{ id: PageId; label: string }> = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'inventory', label: 'Inventory' },
+  { id: 'orders', label: 'Orders' },
+  { id: 'offers', label: 'Offers' },
+]
