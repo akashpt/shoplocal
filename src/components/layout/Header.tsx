@@ -9,6 +9,8 @@ type HeaderProps = {
   ordersView: 'list' | 'details'
   offersSearch: string
   offersView: 'list' | 'create'
+  expensesSearch: string
+  expensesView: 'list' | 'add'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -20,6 +22,10 @@ type HeaderProps = {
   onOffersCancel: () => void
   onOffersSave: () => void
   onOffersSearchChange: (value: string) => void
+  onAddExpense: () => void
+  onExpensesCancel: () => void
+  onExpensesSave: () => void
+  onExpensesSearchChange: (value: string) => void
   onMenuClick: () => void
 }
 
@@ -28,6 +34,7 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'inventory', label: 'Inventory' },
   { id: 'orders', label: 'Orders' },
   { id: 'offers', label: 'Offers' },
+  { id: 'expenses', label: 'Expense Tracker' },
 ]
 
 export function Header({
@@ -38,6 +45,8 @@ export function Header({
   ordersView,
   offersSearch,
   offersView,
+  expensesSearch,
+  expensesView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -49,6 +58,10 @@ export function Header({
   onOffersCancel,
   onOffersSave,
   onOffersSearchChange,
+  onAddExpense,
+  onExpensesCancel,
+  onExpensesSave,
+  onExpensesSearchChange,
   onMenuClick,
 }: HeaderProps) {
   const pageTitle = navItems.find((item) => item.id === activePage)?.label || 'Dashboard'
@@ -57,9 +70,11 @@ export function Header({
   const isInventoryPage = activePage === 'inventory'
   const isOrdersPage = activePage === 'orders'
   const isOffersPage = activePage === 'offers'
+  const isExpensesPage = activePage === 'expenses'
   const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
   const isOrdersDetail = isOrdersPage && ordersView === 'details'
   const isOffersCreate = isOffersPage && offersView === 'create'
+  const isExpensesAdd = isExpensesPage && expensesView === 'add'
   const inventoryDetailTitle = inventoryView === 'add' ? 'Add Product' : 'Product Profile'
 
   useEffect(() => {
@@ -109,6 +124,10 @@ export function Header({
             <>
               <span className="title-muted">Offers</span> Create Offer
             </>
+          ) : isExpensesAdd ? (
+            <>
+              <span className="title-muted">Expenses</span> Add Expense
+            </>
           ) : (
             pageTitle
           )}
@@ -157,8 +176,35 @@ export function Header({
             />
           </label>
         )}
+        {isExpensesPage && expensesView === 'list' && (
+          <label className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.5 16.5 4 4" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search expenses..."
+              value={expensesSearch}
+              onChange={(event) => onExpensesSearchChange(event.target.value)}
+            />
+          </label>
+        )}
         <div className="action-buttons">
-          {isOffersCreate ? (
+          {isExpensesAdd ? (
+            <>
+              <button className="action-button" type="button" onClick={onExpensesCancel}>
+                Cancel
+              </button>
+              <button className="action-button primary" type="button" onClick={onExpensesSave}>
+                Add Expense
+              </button>
+            </>
+          ) : isExpensesPage ? (
+            <button className="action-button primary" type="button" onClick={onAddExpense}>
+              Add Expense
+            </button>
+          ) : isOffersCreate ? (
             <>
               <button className="action-button" type="button" onClick={onOffersCancel}>
                 Cancel
@@ -202,7 +248,7 @@ export function Header({
               <button className="action-button" type="button" onClick={onAddProduct}>
                 Add Product
               </button>
-              <button className="action-button" type="button">
+              <button className="action-button" type="button" onClick={onAddExpense}>
                 Add Expense
               </button>
               <button className="action-button primary" type="button" onClick={onCreateOffer}>
@@ -252,7 +298,7 @@ export function Header({
               <strong>Anita Mani</strong>
               <small>Store manager</small>
               <button className="mobile-menu-action" type="button" onClick={onAddProduct}>Add Product</button>
-              <button className="mobile-menu-action" type="button">Add Expense</button>
+              <button className="mobile-menu-action" type="button" onClick={onAddExpense}>Add Expense</button>
               <button className="mobile-menu-action primary" type="button" onClick={onCreateOffer}>Create Offer</button>
               <button type="button">Manage profile</button>
               <button type="button">Sign out</button>

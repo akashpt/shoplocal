@@ -13,6 +13,8 @@ type MainLayoutProps = {
   ordersView: 'list' | 'details'
   offersSearch: string
   offersView: 'list' | 'create'
+  expensesSearch: string
+  expensesView: 'list' | 'add'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -24,6 +26,10 @@ type MainLayoutProps = {
   onOffersCancel: () => void
   onOffersSave: () => void
   onOffersSearchChange: (value: string) => void
+  onAddExpense: () => void
+  onExpensesCancel: () => void
+  onExpensesSave: () => void
+  onExpensesSearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
@@ -36,6 +42,8 @@ export function MainLayout({
   ordersView,
   offersSearch,
   offersView,
+  expensesSearch,
+  expensesView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -47,6 +55,10 @@ export function MainLayout({
   onOffersCancel,
   onOffersSave,
   onOffersSearchChange,
+  onAddExpense,
+  onExpensesCancel,
+  onExpensesSave,
+  onExpensesSearchChange,
   onNavigate,
 }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -74,6 +86,8 @@ export function MainLayout({
           ordersView={ordersView}
           offersSearch={offersSearch}
           offersView={offersView}
+          expensesSearch={expensesSearch}
+          expensesView={expensesView}
           onAddProduct={onAddProduct}
           onInventoryCancel={onInventoryCancel}
           onInventorySave={onInventorySave}
@@ -85,6 +99,10 @@ export function MainLayout({
           onOffersCancel={onOffersCancel}
           onOffersSave={onOffersSave}
           onOffersSearchChange={onOffersSearchChange}
+          onAddExpense={onAddExpense}
+          onExpensesCancel={onExpensesCancel}
+          onExpensesSave={onExpensesSave}
+          onExpensesSearchChange={onExpensesSearchChange}
           onMenuClick={() => setIsSidebarOpen(true)}
         />
         <div className="page-content">

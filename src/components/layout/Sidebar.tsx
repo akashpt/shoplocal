@@ -13,7 +13,7 @@ const mainNavItems: Array<{ id: PageId; label: string }> = [
 ]
 
 const financeNavItems: Array<{ id: PageId; label: string }> = [
-  { id: 'orders', label: 'Expenses' },
+  { id: 'expenses', label: 'Expenses' },
   { id: 'offers', label: 'Invoices' },
 ]
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { AppShell } from './components/AppShell'
 import { Dashboard } from './pages/Dashboard'
+import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
@@ -10,6 +11,7 @@ import type { PageId } from './types'
 type InventoryView = 'list' | 'add' | 'profile'
 type OrdersView = 'list' | 'details'
 type OffersView = 'list' | 'create'
+type ExpensesView = 'list' | 'add'
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
@@ -20,6 +22,8 @@ function App() {
   const [ordersView, setOrdersView] = useState<OrdersView>('list')
   const [offersSearch, setOffersSearch] = useState('')
   const [offersView, setOffersView] = useState<OffersView>('list')
+  const [expensesSearch, setExpensesSearch] = useState('')
+  const [expensesView, setExpensesView] = useState<ExpensesView>('list')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -48,6 +52,8 @@ function App() {
         ordersView={ordersView}
         offersSearch={offersSearch}
         offersView={offersView}
+        expensesSearch={expensesSearch}
+        expensesView={expensesView}
         onAddProduct={() => {
           setActivePage('inventory')
           setInventoryView('add')
@@ -65,6 +71,13 @@ function App() {
         onOffersCancel={() => setOffersView('list')}
         onOffersSave={() => setOffersView('list')}
         onOffersSearchChange={setOffersSearch}
+        onAddExpense={() => {
+          setActivePage('expenses')
+          setExpensesView('add')
+        }}
+        onExpensesCancel={() => setExpensesView('list')}
+        onExpensesSave={() => window.dispatchEvent(new Event('expenses:save'))}
+        onExpensesSearchChange={setExpensesSearch}
         onNavigate={(page) => {
           setActivePage(page)
           if (page !== 'inventory') {
@@ -75,6 +88,9 @@ function App() {
           }
           if (page !== 'offers') {
             setOffersView('list')
+          }
+          if (page !== 'expenses') {
+            setExpensesView('list')
           }
         }}
       >
@@ -98,6 +114,13 @@ function App() {
             searchQuery={offersSearch}
             view={offersView}
             onViewChange={setOffersView}
+          />
+        )}
+        {activePage === 'expenses' && (
+          <Expenses
+            searchQuery={expensesSearch}
+            view={expensesView}
+            onViewChange={setExpensesView}
           />
         )}
       </AppShell>
