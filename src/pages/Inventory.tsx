@@ -126,7 +126,7 @@ function FilterDropdown({
 
   return (
     <div
-      className={label ? 'filter-control sort-control' : 'filter-control'}
+      className={`${label ? 'filter-control sort-control' : 'filter-control'}${isOpen ? ' open' : ''}`}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
           onOpenChange(null)
@@ -171,6 +171,7 @@ function FilterDropdown({
 
 export function Inventory({ searchQuery }: InventoryProps) {
   const [products, setProducts] = useState(initialProducts)
+  const [localSearchQuery, setLocalSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All Categories')
   const [stockFilter, setStockFilter] = useState('All Stock levels')
   const [sortMode, setSortMode] = useState('Name A -Z')
@@ -185,7 +186,7 @@ export function Inventory({ searchQuery }: InventoryProps) {
   const stockOptions = ['All Stock levels', 'Low Stock', 'In Stock', 'High Stock', 'Out of Stock']
   const sortOptions = ['Name A -Z', 'Name Z -A', 'Stock Low -High', 'Stock High -Low']
   const filteredProducts = useMemo(() => {
-    const normalizedSearch = searchQuery.trim().toLowerCase()
+    const normalizedSearch = `${searchQuery} ${localSearchQuery}`.trim().toLowerCase()
 
     return products
       .filter((product) => {
@@ -219,7 +220,7 @@ export function Inventory({ searchQuery }: InventoryProps) {
 
         return firstProduct.name.localeCompare(secondProduct.name)
       })
-  }, [categoryFilter, products, searchQuery, sortMode, stockFilter])
+  }, [categoryFilter, localSearchQuery, products, searchQuery, sortMode, stockFilter])
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage))
   const safeCurrentPage = Math.min(currentPage, totalPages)
   const visibleProducts = filteredProducts.slice(
@@ -290,6 +291,22 @@ export function Inventory({ searchQuery }: InventoryProps) {
 
   return (
     <section className="inventory-page">
+      <label className="inventory-page-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m16.5 16.5 4 4" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search products by name or ID..."
+          value={localSearchQuery}
+          onChange={(event) => {
+            setLocalSearchQuery(event.target.value)
+            setCurrentPage(1)
+            setSelectedProductIds([])
+          }}
+        />
+      </label>
       <div className="inventory-filters">
         <FilterDropdown
           id="category"
