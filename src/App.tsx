@@ -6,6 +6,7 @@ import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
+import { Settings } from './pages/Settings'
 import type { PageId } from './types'
 
 type InventoryView = 'list' | 'add' | 'profile'
@@ -123,6 +124,7 @@ function App() {
             onViewChange={setExpensesView}
           />
         )}
+        {activePage === 'settings' && <Settings />}
       </AppShell>
     </>
   )

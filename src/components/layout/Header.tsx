@@ -35,6 +35,7 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'orders', label: 'Orders' },
   { id: 'offers', label: 'Offers' },
   { id: 'expenses', label: 'Expense Tracker' },
+  { id: 'settings', label: 'Settings' },
 ]
 
 export function Header({
@@ -71,6 +72,7 @@ export function Header({
   const isOrdersPage = activePage === 'orders'
   const isOffersPage = activePage === 'offers'
   const isExpensesPage = activePage === 'expenses'
+  const isSettingsPage = activePage === 'settings'
   const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
   const isOrdersDetail = isOrdersPage && ordersView === 'details'
   const isOffersCreate = isOffersPage && offersView === 'create'
@@ -191,7 +193,11 @@ export function Header({
           </label>
         )}
         <div className="action-buttons">
-          {isExpensesAdd ? (
+          {isSettingsPage ? (
+            <button className="action-button primary" type="button" onClick={() => window.dispatchEvent(new Event('settings:save'))}>
+              Save all changes
+            </button>
+          ) : isExpensesAdd ? (
             <>
               <button className="action-button" type="button" onClick={onExpensesCancel}>
                 Cancel
