@@ -4,6 +4,7 @@ import { AppShell } from './components/AppShell'
 import { Dashboard } from './pages/Dashboard'
 import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
+import { ManageShops } from './pages/ManageShops'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
 import { Settings } from './pages/Settings'
@@ -125,6 +126,7 @@ function App() {
           />
         )}
         {activePage === 'settings' && <Settings />}
+        {activePage === 'shops' && <ManageShops />}
       </AppShell>
     </>
   )

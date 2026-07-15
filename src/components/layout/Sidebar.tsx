@@ -18,7 +18,7 @@ const financeNavItems: Array<{ id: PageId; label: string }> = [
 ]
 
 const accountNavItems: Array<{ id: PageId; label: string }> = [
-  { id: 'inventory', label: 'Manage Shops' },
+  { id: 'shops', label: 'Manage Shops' },
   { id: 'settings', label: 'Settings' },
 ]
 
