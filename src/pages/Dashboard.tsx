@@ -283,7 +283,7 @@ export function Dashboard() {
                   cursor={{ fill: 'rgba(67, 107, 245, 0.06)' }}
                   formatter={(value) => [`Rs.${Number(value ?? 0).toLocaleString('en-IN')}`, '']}
                 />
-                <Bar dataKey="revenue" fill="#416df4" radius={[9, 9, 0, 0]} barSize={20} animationDuration={450} />
+                <Bar dataKey="revenue" fill="#3B6EF8" radius={[9, 9, 0, 0]} barSize={20} animationDuration={450} />
                 <Bar dataKey="expenses" fill="#b8c9ff" radius={[9, 9, 0, 0]} barSize={20} animationDuration={450} />
               </BarChart>
             </ResponsiveContainer>
@@ -323,7 +323,7 @@ export function Dashboard() {
               </span>
               <div className="pagination" aria-label="Pagination">
                 <button
-                  className={ordersPage === 1 ? 'ghost' : ''}
+                  className={ordersPage === 1 ? 'pagination-prev ghost' : 'pagination-prev'}
                   type="button"
                   aria-label="Previous"
                   disabled={ordersPage === 1}
@@ -441,3 +441,4 @@ export function Dashboard() {
     </section>
   )
 }
+

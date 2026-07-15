@@ -101,12 +101,6 @@ export function Tables() {
     )
   }
 
-  function updateActiveFloorType(nextType: FloorType) {
-    setFloors((currentFloors) =>
-      currentFloors.map((floor) => (floor.id === activeFloor.id ? { ...floor, type: nextType } : floor)),
-    )
-  }
-
   function switchFloor(floorId: string) {
     setActiveFloorId(floorId)
     setSelectedTableId('')
@@ -171,10 +165,11 @@ export function Tables() {
   function addTableFromPrompt() {
     const nextNumber = tables.length + 1
     const placement = pendingPlacement || { kind: selectedKind, x: 54, y: 48, col: 8, row: 5, rotate: selectedKind === 'wide' ? -14 : 0 }
+    const nextId = `new-${Date.now()}`
     updateActiveTables((currentTables) => [
       ...currentTables,
       {
-        id: `new-${Date.now()}`,
+        id: nextId,
         name: nameDraft.trim() || `F${nextNumber}`,
         kind: placement.kind,
         status: 'available',
@@ -188,6 +183,8 @@ export function Tables() {
     setNameDraft('')
     setPendingPlacement(null)
     setIsNamePromptOpen(false)
+    setSelectedTableId(nextId)
+    setBottomMode('detail')
   }
 
   function cancelTableNamePrompt() {
@@ -256,7 +253,7 @@ export function Tables() {
 
   function saveFloorInfo() {
     const parsedNumber = Math.max(1, Number(floorNumber) || activeFloor.number)
-    const existingFloor = floors.find((floor) => floor.number === parsedNumber)
+    const existingFloor = floors.find((floor) => floor.number === parsedNumber && floor.id !== activeFloor.id)
 
     if (modalMode === 'add' && !existingFloor) {
       const nextFloor: FloorLayout = {
@@ -281,7 +278,13 @@ export function Tables() {
       return
     }
 
-    updateActiveFloorType(draftFloorType)
+    setFloors((currentFloors) =>
+      currentFloors
+        .map((floor) =>
+          floor.id === activeFloor.id ? { ...floor, number: parsedNumber, type: draftFloorType } : floor,
+        )
+        .sort((first, second) => first.number - second.number),
+    )
   }
 
   return (
@@ -381,6 +384,7 @@ export function Tables() {
           mode={modalMode}
           nameDraft={nameDraft}
           selectedKind={selectedKind}
+          selectedTableId={selectedTable?.id || null}
           selectedTableName={selectedTable?.name || null}
           selectedTableRotation={selectedTable?.rotate || 0}
           step={modalStep}
@@ -437,6 +441,7 @@ function TableLayoutModal({
   onStepChange,
   onUpload,
   selectedKind,
+  selectedTableId,
   selectedTableName,
   selectedTableRotation,
   step,
@@ -470,6 +475,7 @@ function TableLayoutModal({
   onStepChange: (step: ModalStep) => void
   onUpload: (file: File | null) => void
   selectedKind: TableKind
+  selectedTableId: string | null
   selectedTableName: string | null
   selectedTableRotation: number
   step: ModalStep
@@ -634,6 +640,14 @@ function TableLayoutModal({
   }
 
   function goToNextStep() {
+    if (mode === 'edit') {
+      if (step === 1) {
+        onSaveFloorInfo()
+      }
+      onClose()
+      return
+    }
+
     if (step === 1) {
       onSaveFloorInfo()
     }
@@ -719,7 +733,7 @@ function TableLayoutModal({
                   {tables.map((table) => (
                     <DraggableTablePreview
                       key={table.id}
-                      isSelected={selectedTableName === table.name}
+                      isSelected={selectedTableId === table.id}
                       table={table}
                       onDragStart={(event) => writeDragPayload(event, { source: 'existing', id: table.id })}
                       onSelect={() => onSelectTable(table.id)}
@@ -730,19 +744,17 @@ function TableLayoutModal({
                 <div className="modal-table-bottom-actions">
                   <button className={bottomMode === 'select' ? 'active' : ''} type="button" onClick={() => onBottomModeChange('select')}>Table Select</button>
                   {selectedTableName && <button type="button" onClick={onClearSelectedTable}>Table {selectedTableName} <span>x</span></button>}
-                  {selectedTableName && <button type="button" onClick={() => {
-                    const selectedTable = tables.find((table) => table.name === selectedTableName)
-                    if (selectedTable) onDeleteTable(selectedTable.id)
+                  {selectedTableId && <button type="button" onClick={() => {
+                    onDeleteTable(selectedTableId)
                   }}>Delete Selected</button>}
-                  {selectedTableName && (
+                  {selectedTableId && (
                     <label className="manual-rotate-control">
                       <span>Rotate</span>
                       <button
                         type="button"
                         aria-label="Rotate table left"
                         onClick={() => {
-                          const selectedTable = tables.find((table) => table.name === selectedTableName)
-                          if (selectedTable) onSetTableRotation(selectedTable.id, selectedTableRotation - 15)
+                          onSetTableRotation(selectedTableId, selectedTableRotation - 15)
                         }}
                       >
                         -
@@ -753,16 +765,14 @@ function TableLayoutModal({
                         max="359"
                         value={selectedTableRotation}
                         onChange={(event) => {
-                          const selectedTable = tables.find((table) => table.name === selectedTableName)
-                          if (selectedTable) onSetTableRotation(selectedTable.id, Number(event.target.value))
+                          onSetTableRotation(selectedTableId, Number(event.target.value))
                         }}
                       />
                       <button
                         type="button"
                         aria-label="Rotate table right"
                         onClick={() => {
-                          const selectedTable = tables.find((table) => table.name === selectedTableName)
-                          if (selectedTable) onSetTableRotation(selectedTable.id, selectedTableRotation + 15)
+                          onSetTableRotation(selectedTableId, selectedTableRotation + 15)
                         }}
                       >
                         +
@@ -773,8 +783,7 @@ function TableLayoutModal({
                         max="359"
                         value={selectedTableRotation}
                         onChange={(event) => {
-                          const selectedTable = tables.find((table) => table.name === selectedTableName)
-                          if (selectedTable) onSetTableRotation(selectedTable.id, Number(event.target.value))
+                          onSetTableRotation(selectedTableId, Number(event.target.value))
                         }}
                       />
                     </label>

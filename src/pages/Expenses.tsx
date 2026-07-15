@@ -52,7 +52,7 @@ const initialExpenses: ExpenseRow[] = [
 ]
 
 const breakdownData = [
-  { name: 'Inventory purchases', category: 'Inventory', value: 23000, color: '#416df4' },
+  { name: 'Inventory purchases', category: 'Inventory', value: 23000, color: '#3B6EF8' },
   { name: 'Staff salaries', category: 'Salaries', value: 5200, color: '#5b22e8' },
   { name: 'Shop rent', category: 'Shop rent', value: 2500, color: '#ff9d00' },
   { name: 'Utilities', category: 'Utilities', value: 900, color: '#00b82e' },
@@ -245,7 +245,7 @@ export function Expenses({ onViewChange, searchQuery, view }: ExpensesProps) {
                 <XAxis dataKey="date" axisLine={false} tickLine={false} />
                 <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `Rs${value}`} />
                 <Tooltip formatter={expenseTooltipFormatter} labelStyle={{ color: '#111111' }} />
-                <Bar dataKey="amount" fill="#416df4" barSize={42} />
+                <Bar dataKey="amount" fill="#3B6EF8" barSize={42} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -556,3 +556,4 @@ function ExpenseSvg({ icon }: { icon: string }) {
 function PreviewRow({ label, value }: { label: string; value: string }) {
   return <div className="preview-row"><span>{label}</span><strong>{value}</strong></div>
 }
+

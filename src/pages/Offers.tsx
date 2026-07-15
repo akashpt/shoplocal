@@ -225,7 +225,7 @@ export function Offers({ onViewChange, searchQuery, view }: OffersProps) {
                 <CartesianGrid vertical={false} stroke="#e2e2e2" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} />
                 <YAxis axisLine={false} tickLine={false} domain={[0, 60]} ticks={[0, 10, 20, 30, 40, 50, 60]} />
-                <Bar dataKey="orders" fill="#416df4" radius={[12, 12, 0, 0]} barSize={28} />
+                <Bar dataKey="orders" fill="#3B6EF8" radius={[12, 12, 0, 0]} barSize={28} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -380,4 +380,5 @@ function CreateOfferView({ onCancel, onSave }: { onCancel: () => void; onSave: (
 function PreviewRow({ label, value }: { label: string; value: string }) {
   return <div className="preview-row"><span>{label}</span><strong>{value}</strong></div>
 }
+
 

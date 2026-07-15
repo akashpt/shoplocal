@@ -534,7 +534,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
             </span>
             <div className="pagination" aria-label="Inventory pagination">
               <button
-                className={safeCurrentPage === 1 ? 'ghost' : ''}
+                className={safeCurrentPage === 1 ? 'pagination-prev ghost' : 'pagination-prev'}
                 type="button"
                 aria-label="Previous"
                 disabled={safeCurrentPage === 1}
