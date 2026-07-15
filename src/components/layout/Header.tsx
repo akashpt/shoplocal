@@ -5,10 +5,15 @@ type HeaderProps = {
   activePage: PageId
   inventoryView: 'list' | 'add' | 'profile'
   inventorySearch: string
+  ordersSearch: string
+  ordersView: 'list' | 'details'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
   onInventorySearchChange: (value: string) => void
+  onOrdersBack: () => void
+  onOrdersPrint: () => void
+  onOrdersSearchChange: (value: string) => void
   onMenuClick: () => void
 }
 
@@ -23,17 +28,24 @@ export function Header({
   activePage,
   inventoryView,
   inventorySearch,
+  ordersSearch,
+  ordersView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
   onInventorySearchChange,
+  onOrdersBack,
+  onOrdersPrint,
+  onOrdersSearchChange,
   onMenuClick,
 }: HeaderProps) {
   const pageTitle = navItems.find((item) => item.id === activePage)?.label || 'Dashboard'
   const [openMenu, setOpenMenu] = useState<'notifications' | 'profile' | null>(null)
   const headerRef = useRef<HTMLElement | null>(null)
   const isInventoryPage = activePage === 'inventory'
+  const isOrdersPage = activePage === 'orders'
   const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
+  const isOrdersDetail = isOrdersPage && ordersView === 'details'
   const inventoryDetailTitle = inventoryView === 'add' ? 'Add Product' : 'Product Profile'
 
   useEffect(() => {
@@ -75,6 +87,10 @@ export function Header({
             <>
               <span className="title-muted">Inventory</span> {inventoryDetailTitle}
             </>
+          ) : isOrdersDetail ? (
+            <>
+              <span className="title-muted">Orders</span> Order Details
+            </>
           ) : (
             pageTitle
           )}
@@ -95,8 +111,31 @@ export function Header({
             />
           </label>
         )}
+        {isOrdersPage && ordersView === 'list' && (
+          <label className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.5 16.5 4 4" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search Orders by Customer or ID..."
+              value={ordersSearch}
+              onChange={(event) => onOrdersSearchChange(event.target.value)}
+            />
+          </label>
+        )}
         <div className="action-buttons">
-          {isInventoryDetail ? (
+          {isOrdersDetail ? (
+            <>
+              <button className="action-button" type="button" onClick={onOrdersBack}>
+                Back
+              </button>
+              <button className="action-button" type="button" onClick={onOrdersPrint}>
+                Print Invoice
+              </button>
+            </>
+          ) : isInventoryDetail ? (
             <>
               <button className="action-button" type="button" onClick={onInventoryCancel}>
                 Cancel

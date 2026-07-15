@@ -8,12 +8,15 @@ import { Orders } from './pages/Orders'
 import type { PageId } from './types'
 
 type InventoryView = 'list' | 'add' | 'profile'
+type OrdersView = 'list' | 'details'
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
   const [isLoading, setIsLoading] = useState(true)
   const [inventorySearch, setInventorySearch] = useState('')
   const [inventoryView, setInventoryView] = useState<InventoryView>('list')
+  const [ordersSearch, setOrdersSearch] = useState('')
+  const [ordersView, setOrdersView] = useState<OrdersView>('list')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -38,6 +41,8 @@ function App() {
         activePage={activePage}
         inventoryView={inventoryView}
         inventorySearch={inventorySearch}
+        ordersSearch={ordersSearch}
+        ordersView={ordersView}
         onAddProduct={() => {
           setActivePage('inventory')
           setInventoryView('add')
@@ -45,10 +50,16 @@ function App() {
         onInventoryCancel={() => setInventoryView('list')}
         onInventorySave={() => window.dispatchEvent(new Event('inventory:save'))}
         onInventorySearchChange={setInventorySearch}
+        onOrdersBack={() => setOrdersView('list')}
+        onOrdersPrint={() => window.print()}
+        onOrdersSearchChange={setOrdersSearch}
         onNavigate={(page) => {
           setActivePage(page)
           if (page !== 'inventory') {
             setInventoryView('list')
+          }
+          if (page !== 'orders') {
+            setOrdersView('list')
           }
         }}
       >
@@ -60,7 +71,13 @@ function App() {
             onViewChange={setInventoryView}
           />
         )}
-        {activePage === 'orders' && <Orders />}
+        {activePage === 'orders' && (
+          <Orders
+            searchQuery={ordersSearch}
+            view={ordersView}
+            onViewChange={setOrdersView}
+          />
+        )}
         {activePage === 'offers' && <Offers />}
       </AppShell>
     </>
