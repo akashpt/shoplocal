@@ -9,6 +9,7 @@ import type { PageId } from './types'
 
 type InventoryView = 'list' | 'add' | 'profile'
 type OrdersView = 'list' | 'details'
+type OffersView = 'list' | 'create'
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
@@ -17,6 +18,8 @@ function App() {
   const [inventoryView, setInventoryView] = useState<InventoryView>('list')
   const [ordersSearch, setOrdersSearch] = useState('')
   const [ordersView, setOrdersView] = useState<OrdersView>('list')
+  const [offersSearch, setOffersSearch] = useState('')
+  const [offersView, setOffersView] = useState<OffersView>('list')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -43,6 +46,8 @@ function App() {
         inventorySearch={inventorySearch}
         ordersSearch={ordersSearch}
         ordersView={ordersView}
+        offersSearch={offersSearch}
+        offersView={offersView}
         onAddProduct={() => {
           setActivePage('inventory')
           setInventoryView('add')
@@ -53,6 +58,13 @@ function App() {
         onOrdersBack={() => setOrdersView('list')}
         onOrdersPrint={() => window.print()}
         onOrdersSearchChange={setOrdersSearch}
+        onCreateOffer={() => {
+          setActivePage('offers')
+          setOffersView('create')
+        }}
+        onOffersCancel={() => setOffersView('list')}
+        onOffersSave={() => setOffersView('list')}
+        onOffersSearchChange={setOffersSearch}
         onNavigate={(page) => {
           setActivePage(page)
           if (page !== 'inventory') {
@@ -60,6 +72,9 @@ function App() {
           }
           if (page !== 'orders') {
             setOrdersView('list')
+          }
+          if (page !== 'offers') {
+            setOffersView('list')
           }
         }}
       >
@@ -78,7 +93,13 @@ function App() {
             onViewChange={setOrdersView}
           />
         )}
-        {activePage === 'offers' && <Offers />}
+        {activePage === 'offers' && (
+          <Offers
+            searchQuery={offersSearch}
+            view={offersView}
+            onViewChange={setOffersView}
+          />
+        )}
       </AppShell>
     </>
   )

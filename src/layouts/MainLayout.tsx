@@ -11,6 +11,8 @@ type MainLayoutProps = {
   inventorySearch: string
   ordersSearch: string
   ordersView: 'list' | 'details'
+  offersSearch: string
+  offersView: 'list' | 'create'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -18,6 +20,10 @@ type MainLayoutProps = {
   onOrdersBack: () => void
   onOrdersPrint: () => void
   onOrdersSearchChange: (value: string) => void
+  onCreateOffer: () => void
+  onOffersCancel: () => void
+  onOffersSave: () => void
+  onOffersSearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
@@ -28,6 +34,8 @@ export function MainLayout({
   inventorySearch,
   ordersSearch,
   ordersView,
+  offersSearch,
+  offersView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -35,6 +43,10 @@ export function MainLayout({
   onOrdersBack,
   onOrdersPrint,
   onOrdersSearchChange,
+  onCreateOffer,
+  onOffersCancel,
+  onOffersSave,
+  onOffersSearchChange,
   onNavigate,
 }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -60,6 +72,8 @@ export function MainLayout({
           inventorySearch={inventorySearch}
           ordersSearch={ordersSearch}
           ordersView={ordersView}
+          offersSearch={offersSearch}
+          offersView={offersView}
           onAddProduct={onAddProduct}
           onInventoryCancel={onInventoryCancel}
           onInventorySave={onInventorySave}
@@ -67,6 +81,10 @@ export function MainLayout({
           onOrdersBack={onOrdersBack}
           onOrdersPrint={onOrdersPrint}
           onOrdersSearchChange={onOrdersSearchChange}
+          onCreateOffer={onCreateOffer}
+          onOffersCancel={onOffersCancel}
+          onOffersSave={onOffersSave}
+          onOffersSearchChange={onOffersSearchChange}
           onMenuClick={() => setIsSidebarOpen(true)}
         />
         <div className="page-content">

@@ -9,6 +9,8 @@ type AppShellProps = {
   inventorySearch: string
   ordersSearch: string
   ordersView: 'list' | 'details'
+  offersSearch: string
+  offersView: 'list' | 'create'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -16,6 +18,10 @@ type AppShellProps = {
   onOrdersBack: () => void
   onOrdersPrint: () => void
   onOrdersSearchChange: (value: string) => void
+  onCreateOffer: () => void
+  onOffersCancel: () => void
+  onOffersSave: () => void
+  onOffersSearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
@@ -26,6 +32,8 @@ export function AppShell({
   inventorySearch,
   ordersSearch,
   ordersView,
+  offersSearch,
+  offersView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -33,6 +41,10 @@ export function AppShell({
   onOrdersBack,
   onOrdersPrint,
   onOrdersSearchChange,
+  onCreateOffer,
+  onOffersCancel,
+  onOffersSave,
+  onOffersSearchChange,
   onNavigate,
 }: AppShellProps) {
   return (
@@ -42,6 +54,8 @@ export function AppShell({
       inventorySearch={inventorySearch}
       ordersSearch={ordersSearch}
       ordersView={ordersView}
+      offersSearch={offersSearch}
+      offersView={offersView}
       onAddProduct={onAddProduct}
       onInventoryCancel={onInventoryCancel}
       onInventorySave={onInventorySave}
@@ -49,6 +63,10 @@ export function AppShell({
       onOrdersBack={onOrdersBack}
       onOrdersPrint={onOrdersPrint}
       onOrdersSearchChange={onOrdersSearchChange}
+      onCreateOffer={onCreateOffer}
+      onOffersCancel={onOffersCancel}
+      onOffersSave={onOffersSave}
+      onOffersSearchChange={onOffersSearchChange}
       onNavigate={onNavigate}
     >
       {children}

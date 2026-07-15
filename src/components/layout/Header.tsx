@@ -7,6 +7,8 @@ type HeaderProps = {
   inventorySearch: string
   ordersSearch: string
   ordersView: 'list' | 'details'
+  offersSearch: string
+  offersView: 'list' | 'create'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -14,6 +16,10 @@ type HeaderProps = {
   onOrdersBack: () => void
   onOrdersPrint: () => void
   onOrdersSearchChange: (value: string) => void
+  onCreateOffer: () => void
+  onOffersCancel: () => void
+  onOffersSave: () => void
+  onOffersSearchChange: (value: string) => void
   onMenuClick: () => void
 }
 
@@ -30,6 +36,8 @@ export function Header({
   inventorySearch,
   ordersSearch,
   ordersView,
+  offersSearch,
+  offersView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -37,6 +45,10 @@ export function Header({
   onOrdersBack,
   onOrdersPrint,
   onOrdersSearchChange,
+  onCreateOffer,
+  onOffersCancel,
+  onOffersSave,
+  onOffersSearchChange,
   onMenuClick,
 }: HeaderProps) {
   const pageTitle = navItems.find((item) => item.id === activePage)?.label || 'Dashboard'
@@ -44,8 +56,10 @@ export function Header({
   const headerRef = useRef<HTMLElement | null>(null)
   const isInventoryPage = activePage === 'inventory'
   const isOrdersPage = activePage === 'orders'
+  const isOffersPage = activePage === 'offers'
   const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
   const isOrdersDetail = isOrdersPage && ordersView === 'details'
+  const isOffersCreate = isOffersPage && offersView === 'create'
   const inventoryDetailTitle = inventoryView === 'add' ? 'Add Product' : 'Product Profile'
 
   useEffect(() => {
@@ -91,6 +105,10 @@ export function Header({
             <>
               <span className="title-muted">Orders</span> Order Details
             </>
+          ) : isOffersCreate ? (
+            <>
+              <span className="title-muted">Offers</span> Create Offer
+            </>
           ) : (
             pageTitle
           )}
@@ -125,8 +143,31 @@ export function Header({
             />
           </label>
         )}
+        {isOffersPage && offersView === 'list' && (
+          <label className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.5 16.5 4 4" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search offers by name or code..."
+              value={offersSearch}
+              onChange={(event) => onOffersSearchChange(event.target.value)}
+            />
+          </label>
+        )}
         <div className="action-buttons">
-          {isOrdersDetail ? (
+          {isOffersCreate ? (
+            <>
+              <button className="action-button" type="button" onClick={onOffersCancel}>
+                Cancel
+              </button>
+              <button className="action-button primary" type="button" onClick={onOffersSave}>
+                Create Offer
+              </button>
+            </>
+          ) : isOrdersDetail ? (
             <>
               <button className="action-button" type="button" onClick={onOrdersBack}>
                 Back
@@ -164,7 +205,7 @@ export function Header({
               <button className="action-button" type="button">
                 Add Expense
               </button>
-              <button className="action-button primary" type="button">
+              <button className="action-button primary" type="button" onClick={onCreateOffer}>
                 Create Offer
               </button>
             </>
@@ -210,9 +251,9 @@ export function Header({
             <div className="dropdown-panel profile-dropdown">
               <strong>Anita Mani</strong>
               <small>Store manager</small>
-              <button className="mobile-menu-action" type="button">Add Product</button>
+              <button className="mobile-menu-action" type="button" onClick={onAddProduct}>Add Product</button>
               <button className="mobile-menu-action" type="button">Add Expense</button>
-              <button className="mobile-menu-action primary" type="button">Create Offer</button>
+              <button className="mobile-menu-action primary" type="button" onClick={onCreateOffer}>Create Offer</button>
               <button type="button">Manage profile</button>
               <button type="button">Sign out</button>
             </div>
