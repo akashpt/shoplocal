@@ -2,6 +2,7 @@ export type PageId =
   | 'dashboard'
   | 'inventory'
   | 'orders'
+  | 'tables'
   | 'offers'
   | 'expenses'
   | 'invoices'

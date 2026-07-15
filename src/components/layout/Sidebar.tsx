@@ -9,6 +9,7 @@ const mainNavItems: Array<{ id: PageId; label: string }> = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'inventory', label: 'Inventory' },
   { id: 'orders', label: 'Orders' },
+  { id: 'tables', label: 'Table' },
   { id: 'offers', label: 'Offers' },
 ]
 

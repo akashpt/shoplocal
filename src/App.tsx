@@ -9,6 +9,7 @@ import { ManageShops } from './pages/ManageShops'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
 import { Settings } from './pages/Settings'
+import { Tables } from './pages/Tables'
 import type { PageId } from './types'
 
 type InventoryView = 'list' | 'add' | 'profile'
@@ -130,6 +131,7 @@ function App() {
             onViewChange={setOrdersView}
           />
         )}
+        {activePage === 'tables' && <Tables />}
         {activePage === 'offers' && (
           <Offers
             searchQuery={offersSearch}
