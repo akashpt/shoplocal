@@ -15,6 +15,8 @@ type MainLayoutProps = {
   offersView: 'list' | 'create'
   expensesSearch: string
   expensesView: 'list' | 'add'
+  invoicesSearch: string
+  invoicesView: 'list' | 'generate' | 'detail'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -30,6 +32,13 @@ type MainLayoutProps = {
   onExpensesCancel: () => void
   onExpensesSave: () => void
   onExpensesSearchChange: (value: string) => void
+  onGenerateInvoice: () => void
+  onInvoicesCancel: () => void
+  onInvoicesSave: () => void
+  onInvoicesPrint: () => void
+  onInvoicesShare: () => void
+  onInvoicesDownload: () => void
+  onInvoicesSearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
@@ -44,6 +53,8 @@ export function MainLayout({
   offersView,
   expensesSearch,
   expensesView,
+  invoicesSearch,
+  invoicesView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -59,6 +70,13 @@ export function MainLayout({
   onExpensesCancel,
   onExpensesSave,
   onExpensesSearchChange,
+  onGenerateInvoice,
+  onInvoicesCancel,
+  onInvoicesSave,
+  onInvoicesPrint,
+  onInvoicesShare,
+  onInvoicesDownload,
+  onInvoicesSearchChange,
   onNavigate,
 }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -88,6 +106,8 @@ export function MainLayout({
           offersView={offersView}
           expensesSearch={expensesSearch}
           expensesView={expensesView}
+          invoicesSearch={invoicesSearch}
+          invoicesView={invoicesView}
           onAddProduct={onAddProduct}
           onInventoryCancel={onInventoryCancel}
           onInventorySave={onInventorySave}
@@ -103,6 +123,13 @@ export function MainLayout({
           onExpensesCancel={onExpensesCancel}
           onExpensesSave={onExpensesSave}
           onExpensesSearchChange={onExpensesSearchChange}
+          onGenerateInvoice={onGenerateInvoice}
+          onInvoicesCancel={onInvoicesCancel}
+          onInvoicesSave={onInvoicesSave}
+          onInvoicesPrint={onInvoicesPrint}
+          onInvoicesShare={onInvoicesShare}
+          onInvoicesDownload={onInvoicesDownload}
+          onInvoicesSearchChange={onInvoicesSearchChange}
           onMenuClick={() => setIsSidebarOpen(true)}
         />
         <div className="page-content">

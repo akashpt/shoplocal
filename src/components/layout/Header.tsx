@@ -11,6 +11,8 @@ type HeaderProps = {
   offersView: 'list' | 'create'
   expensesSearch: string
   expensesView: 'list' | 'add'
+  invoicesSearch: string
+  invoicesView: 'list' | 'generate' | 'detail'
   onAddProduct: () => void
   onInventoryCancel: () => void
   onInventorySave: () => void
@@ -26,6 +28,13 @@ type HeaderProps = {
   onExpensesCancel: () => void
   onExpensesSave: () => void
   onExpensesSearchChange: (value: string) => void
+  onGenerateInvoice: () => void
+  onInvoicesCancel: () => void
+  onInvoicesSave: () => void
+  onInvoicesPrint: () => void
+  onInvoicesShare: () => void
+  onInvoicesDownload: () => void
+  onInvoicesSearchChange: (value: string) => void
   onMenuClick: () => void
 }
 
@@ -35,6 +44,7 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'orders', label: 'Orders' },
   { id: 'offers', label: 'Offers' },
   { id: 'expenses', label: 'Expense Tracker' },
+  { id: 'invoices', label: 'Invoices' },
   { id: 'settings', label: 'Settings' },
   { id: 'shops', label: 'Manage Shops' },
 ]
@@ -49,6 +59,8 @@ export function Header({
   offersView,
   expensesSearch,
   expensesView,
+  invoicesSearch,
+  invoicesView,
   onAddProduct,
   onInventoryCancel,
   onInventorySave,
@@ -64,6 +76,13 @@ export function Header({
   onExpensesCancel,
   onExpensesSave,
   onExpensesSearchChange,
+  onGenerateInvoice,
+  onInvoicesCancel,
+  onInvoicesSave,
+  onInvoicesPrint,
+  onInvoicesShare,
+  onInvoicesDownload,
+  onInvoicesSearchChange,
   onMenuClick,
 }: HeaderProps) {
   const pageTitle = navItems.find((item) => item.id === activePage)?.label || 'Dashboard'
@@ -73,12 +92,15 @@ export function Header({
   const isOrdersPage = activePage === 'orders'
   const isOffersPage = activePage === 'offers'
   const isExpensesPage = activePage === 'expenses'
+  const isInvoicesPage = activePage === 'invoices'
   const isSettingsPage = activePage === 'settings'
   const isShopsPage = activePage === 'shops'
   const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
   const isOrdersDetail = isOrdersPage && ordersView === 'details'
   const isOffersCreate = isOffersPage && offersView === 'create'
   const isExpensesAdd = isExpensesPage && expensesView === 'add'
+  const isInvoicesGenerate = isInvoicesPage && invoicesView === 'generate'
+  const isInvoicesDetail = isInvoicesPage && invoicesView === 'detail'
   const inventoryDetailTitle = inventoryView === 'add' ? 'Add Product' : 'Product Profile'
 
   useEffect(() => {
@@ -131,6 +153,14 @@ export function Header({
           ) : isExpensesAdd ? (
             <>
               <span className="title-muted">Expenses</span> Add Expense
+            </>
+          ) : isInvoicesGenerate ? (
+            <>
+              <span className="title-muted">Invoices</span> Generate Invoice
+            </>
+          ) : isInvoicesDetail ? (
+            <>
+              <span className="title-muted">Invoices</span> INV-2026-0094
             </>
           ) : (
             pageTitle
@@ -194,6 +224,20 @@ export function Header({
             />
           </label>
         )}
+        {isInvoicesPage && invoicesView === 'list' && (
+          <label className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.5 16.5 4 4" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search by Invoice number or customer..."
+              value={invoicesSearch}
+              onChange={(event) => onInvoicesSearchChange(event.target.value)}
+            />
+          </label>
+        )}
         <div className="action-buttons">
           {isShopsPage ? (
             <button className="action-button primary" type="button" onClick={() => window.dispatchEvent(new Event('shops:add'))}>
@@ -202,6 +246,31 @@ export function Header({
           ) : isSettingsPage ? (
             <button className="action-button primary" type="button" onClick={() => window.dispatchEvent(new Event('settings:save'))}>
               Save all changes
+            </button>
+          ) : isInvoicesDetail ? (
+            <>
+              <button className="action-button" type="button" onClick={onInvoicesPrint}>
+                Print
+              </button>
+              <button className="action-button" type="button" onClick={onInvoicesShare}>
+                Share
+              </button>
+              <button className="action-button primary" type="button" onClick={onInvoicesDownload}>
+                Download PDF
+              </button>
+            </>
+          ) : isInvoicesGenerate ? (
+            <>
+              <button className="action-button" type="button" onClick={onInvoicesCancel}>
+                Cancel
+              </button>
+              <button className="action-button primary" type="button" onClick={onInvoicesSave}>
+                Generate Invoice
+              </button>
+            </>
+          ) : isInvoicesPage ? (
+            <button className="action-button primary" type="button" onClick={onGenerateInvoice}>
+              Generate Invoice
             </button>
           ) : isExpensesAdd ? (
             <>

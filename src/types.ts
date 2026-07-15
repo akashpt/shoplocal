@@ -1,1 +1,9 @@
-export type PageId = 'dashboard' | 'inventory' | 'orders' | 'offers' | 'expenses' | 'settings' | 'shops'
+export type PageId =
+  | 'dashboard'
+  | 'inventory'
+  | 'orders'
+  | 'offers'
+  | 'expenses'
+  | 'invoices'
+  | 'settings'
+  | 'shops'

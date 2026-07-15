@@ -4,6 +4,7 @@ import { AppShell } from './components/AppShell'
 import { Dashboard } from './pages/Dashboard'
 import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
+import { Invoices } from './pages/Invoices'
 import { ManageShops } from './pages/ManageShops'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
@@ -14,6 +15,7 @@ type InventoryView = 'list' | 'add' | 'profile'
 type OrdersView = 'list' | 'details'
 type OffersView = 'list' | 'create'
 type ExpensesView = 'list' | 'add'
+type InvoicesView = 'list' | 'generate' | 'detail'
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
@@ -26,6 +28,8 @@ function App() {
   const [offersView, setOffersView] = useState<OffersView>('list')
   const [expensesSearch, setExpensesSearch] = useState('')
   const [expensesView, setExpensesView] = useState<ExpensesView>('list')
+  const [invoicesSearch, setInvoicesSearch] = useState('')
+  const [invoicesView, setInvoicesView] = useState<InvoicesView>('list')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -56,6 +60,8 @@ function App() {
         offersView={offersView}
         expensesSearch={expensesSearch}
         expensesView={expensesView}
+        invoicesSearch={invoicesSearch}
+        invoicesView={invoicesView}
         onAddProduct={() => {
           setActivePage('inventory')
           setInventoryView('add')
@@ -80,6 +86,16 @@ function App() {
         onExpensesCancel={() => setExpensesView('list')}
         onExpensesSave={() => window.dispatchEvent(new Event('expenses:save'))}
         onExpensesSearchChange={setExpensesSearch}
+        onGenerateInvoice={() => {
+          setActivePage('invoices')
+          setInvoicesView('generate')
+        }}
+        onInvoicesCancel={() => setInvoicesView('list')}
+        onInvoicesSave={() => window.dispatchEvent(new Event('invoices:save'))}
+        onInvoicesPrint={() => window.print()}
+        onInvoicesShare={() => window.dispatchEvent(new Event('invoices:share'))}
+        onInvoicesDownload={() => window.dispatchEvent(new Event('invoices:download'))}
+        onInvoicesSearchChange={setInvoicesSearch}
         onNavigate={(page) => {
           setActivePage(page)
           if (page !== 'inventory') {
@@ -93,6 +109,9 @@ function App() {
           }
           if (page !== 'expenses') {
             setExpensesView('list')
+          }
+          if (page !== 'invoices') {
+            setInvoicesView('list')
           }
         }}
       >
@@ -123,6 +142,13 @@ function App() {
             searchQuery={expensesSearch}
             view={expensesView}
             onViewChange={setExpensesView}
+          />
+        )}
+        {activePage === 'invoices' && (
+          <Invoices
+            searchQuery={invoicesSearch}
+            view={invoicesView}
+            onViewChange={setInvoicesView}
           />
         )}
         {activePage === 'settings' && <Settings />}

@@ -14,7 +14,7 @@ const mainNavItems: Array<{ id: PageId; label: string }> = [
 
 const financeNavItems: Array<{ id: PageId; label: string }> = [
   { id: 'expenses', label: 'Expenses' },
-  { id: 'offers', label: 'Invoices' },
+  { id: 'invoices', label: 'Invoices' },
 ]
 
 const accountNavItems: Array<{ id: PageId; label: string }> = [
