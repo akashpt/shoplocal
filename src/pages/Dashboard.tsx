@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 
 type ChartRange = 'W' | 'M' | 'Y'
 
@@ -398,15 +399,12 @@ export function Dashboard() {
                     <small>{offer.meta}</small>
                   </div>
                   <span>{offer.discount}</span>
-                  <button
-                    className={enabledOffers.includes(offer.title) ? 'offer-toggle active' : 'offer-toggle'}
-                    type="button"
-                    aria-label={`${offer.title} ${enabledOffers.includes(offer.title) ? 'enabled' : 'disabled'}`}
-                    aria-pressed={enabledOffers.includes(offer.title)}
-                    onClick={() => toggleOffer(offer.title)}
-                  >
-                    <i></i>
-                  </button>
+                  <ToggleSwitch
+                    checked={enabledOffers.includes(offer.title)}
+                    className="offer-toggle"
+                    label={`${offer.title} ${enabledOffers.includes(offer.title) ? 'enabled' : 'disabled'}`}
+                    onChange={() => toggleOffer(offer.title)}
+                  />
                 </div>
               ))}
             </div>

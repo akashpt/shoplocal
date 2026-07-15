@@ -3,7 +3,11 @@ import type { PageId } from '../../types'
 
 type HeaderProps = {
   activePage: PageId
+  inventoryView: 'list' | 'add' | 'profile'
   inventorySearch: string
+  onAddProduct: () => void
+  onInventoryCancel: () => void
+  onInventorySave: () => void
   onInventorySearchChange: (value: string) => void
   onMenuClick: () => void
 }
@@ -17,7 +21,11 @@ const navItems: Array<{ id: PageId; label: string }> = [
 
 export function Header({
   activePage,
+  inventoryView,
   inventorySearch,
+  onAddProduct,
+  onInventoryCancel,
+  onInventorySave,
   onInventorySearchChange,
   onMenuClick,
 }: HeaderProps) {
@@ -25,6 +33,8 @@ export function Header({
   const [openMenu, setOpenMenu] = useState<'notifications' | 'profile' | null>(null)
   const headerRef = useRef<HTMLElement | null>(null)
   const isInventoryPage = activePage === 'inventory'
+  const isInventoryDetail = isInventoryPage && inventoryView !== 'list'
+  const inventoryDetailTitle = inventoryView === 'add' ? 'Add Product' : 'Product Profile'
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -60,10 +70,18 @@ export function Header({
           <span></span>
           <span></span>
         </button>
-        <h1>{pageTitle}</h1>
+        <h1>
+          {isInventoryDetail ? (
+            <>
+              <span className="title-muted">Inventory</span> {inventoryDetailTitle}
+            </>
+          ) : (
+            pageTitle
+          )}
+        </h1>
       </div>
       <div className="topbar-right">
-        {isInventoryPage && (
+        {isInventoryPage && inventoryView === 'list' && (
           <label className="header-search">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
@@ -78,7 +96,16 @@ export function Header({
           </label>
         )}
         <div className="action-buttons">
-          {isInventoryPage ? (
+          {isInventoryDetail ? (
+            <>
+              <button className="action-button" type="button" onClick={onInventoryCancel}>
+                Cancel
+              </button>
+              <button className="action-button primary" type="button" onClick={onInventorySave}>
+                Save & Publish
+              </button>
+            </>
+          ) : isInventoryPage ? (
             <>
               <button className="action-button" type="button">
                 Import CSV
@@ -86,13 +113,13 @@ export function Header({
               <button className="action-button" type="button">
                 Export CSV
               </button>
-              <button className="action-button primary" type="button">
+              <button className="action-button primary" type="button" onClick={onAddProduct}>
                 Add Product
               </button>
             </>
           ) : (
             <>
-              <button className="action-button" type="button">
+              <button className="action-button" type="button" onClick={onAddProduct}>
                 Add Product
               </button>
               <button className="action-button" type="button">

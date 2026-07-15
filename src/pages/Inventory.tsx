@@ -1,6 +1,34 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { FormField } from '../components/ui/FormField'
+import { PageActions } from '../components/ui/PageActions'
+import { Panel } from '../components/ui/Panel'
+import { ToggleSwitch } from '../components/ui/ToggleSwitch'
+import heroImage from '../assets/hero.png'
 
-const initialProducts = [
+type Product = {
+  name: string
+  id: string
+  category: string
+  price: string
+  stock: number
+  rating: number
+  brand?: string
+  model?: string
+  supplier?: string
+  expiration?: string
+  description?: string
+}
+
+type UploadedFile = {
+  id: string
+  name: string
+  previewUrl: string | null
+  type: string
+}
+
+const initialProducts: Product[] = [
   { name: 'Tata Salt 1kg', id: 'PRD-0041', category: 'Grocery', price: 'Rs.28', stock: 48, rating: 4 },
   { name: 'Dairy Milk 60g', id: 'PRD-0045', category: 'Chocolates', price: 'Rs.50', stock: 120, rating: 4 },
   { name: 'Amul Butter 500g', id: 'PRD-0042', category: 'Dairy', price: 'Rs.150', stock: 30, rating: 4 },
@@ -14,7 +42,9 @@ const initialProducts = [
 ]
 
 type InventoryProps = {
+  onViewChange: (view: 'list' | 'add' | 'profile') => void
   searchQuery: string
+  view: 'list' | 'add' | 'profile'
 }
 
 type DropdownId = 'category' | 'stock' | 'sort'
@@ -103,6 +133,34 @@ function ChevronIcon() {
   )
 }
 
+function ImageIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="14" rx="2" />
+      <circle cx="9" cy="10" r="1.4" />
+      <path d="m5 17 5-5 4 4 2-2 3 3" />
+    </svg>
+  )
+}
+
+function UploadIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 16V5" />
+      <path d="m8 9 4-4 4 4" />
+      <path d="M5 16v3h14v-3" />
+    </svg>
+  )
+}
+
+function DummyProductImage({ compact = false, name }: { compact?: boolean; name: string }) {
+  return (
+    <div className={compact ? 'dummy-product-image compact' : 'dummy-product-image'}>
+      <img src={heroImage} alt={name} />
+    </div>
+  )
+}
+
 type FilterDropdownProps = {
   id: DropdownId
   label?: string
@@ -169,8 +227,9 @@ function FilterDropdown({
   )
 }
 
-export function Inventory({ searchQuery }: InventoryProps) {
+export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
   const [products, setProducts] = useState(initialProducts)
+  const [profileProductId, setProfileProductId] = useState(initialProducts[0].id)
   const [localSearchQuery, setLocalSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All Categories')
   const [stockFilter, setStockFilter] = useState('All Stock levels')
@@ -271,6 +330,18 @@ export function Inventory({ searchQuery }: InventoryProps) {
     setSelectedProductIds((currentIds) => currentIds.filter((id) => id !== productId))
   }
 
+  function handleAddProduct(product: Product) {
+    setProducts((currentProducts) => [product, ...currentProducts])
+    setInventoryNotice(`${product.name} was added to inventory.`)
+    onViewChange('list')
+  }
+
+  function handleDeleteProfileProduct(productId: string) {
+    deleteProduct(productId)
+    onViewChange('list')
+    setInventoryNotice('Product deleted from inventory.')
+  }
+
   function toggleProductSelection(productId: string) {
     setSelectedProductIds((currentIds) =>
       currentIds.includes(productId)
@@ -286,6 +357,29 @@ export function Inventory({ searchQuery }: InventoryProps) {
       allVisibleProductsSelected
         ? currentIds.filter((id) => !visibleIds.includes(id))
         : Array.from(new Set([...currentIds, ...visibleIds])),
+    )
+  }
+
+  if (view === 'add') {
+    return <AddProductView onCancel={() => onViewChange('list')} onSave={handleAddProduct} />
+  }
+
+  if (view === 'profile') {
+    const profileProduct = products.find((product) => product.id === profileProductId) || products[0]
+
+    if (!profileProduct) {
+      return (
+        <section className="inventory-page">
+          <div className="inventory-empty">No product is available to preview.</div>
+        </section>
+      )
+    }
+
+    return (
+      <ProductProfileView
+        product={profileProduct}
+        onDelete={() => handleDeleteProfileProduct(profileProduct.id)}
+      />
     )
   }
 
@@ -366,12 +460,17 @@ export function Inventory({ searchQuery }: InventoryProps) {
                 <div
                   className={selectedProductIds.includes(product.id) ? 'inventory-row selected' : 'inventory-row'}
                   key={product.id}
+                  onClick={() => {
+                    setProfileProductId(product.id)
+                    onViewChange('profile')
+                  }}
                 >
                   <span className="inventory-check">
                     <input
                       type="checkbox"
                       aria-label={`Select ${product.name}`}
                       checked={selectedProductIds.includes(product.id)}
+                      onClick={(event) => event.stopPropagation()}
                       onChange={() => toggleProductSelection(product.id)}
                     />
                   </span>
@@ -387,7 +486,10 @@ export function Inventory({ searchQuery }: InventoryProps) {
                       type="button"
                       aria-label={`Decrease ${product.name} stock`}
                       disabled={product.stock === 0}
-                      onClick={() => updateStock(product.id, -1)}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        updateStock(product.id, -1)
+                      }}
                     >
                       -
                     </button>
@@ -395,7 +497,10 @@ export function Inventory({ searchQuery }: InventoryProps) {
                     <button
                       type="button"
                       aria-label={`Increase ${product.name} stock`}
-                      onClick={() => updateStock(product.id, 1)}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        updateStock(product.id, 1)
+                      }}
                     >
                       +
                     </button>
@@ -405,7 +510,10 @@ export function Inventory({ searchQuery }: InventoryProps) {
                     className="delete-product"
                     type="button"
                     aria-label={`Delete ${product.name}`}
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      deleteProduct(product.id)
+                    }}
                   >
                     <TrashIcon />
                   </button>
@@ -479,6 +587,375 @@ export function Inventory({ searchQuery }: InventoryProps) {
             </article>
           ))}
         </aside>
+      </div>
+    </section>
+  )
+}
+
+type AddProductViewProps = {
+  onCancel: () => void
+  onSave: (product: Product) => void
+}
+
+function AddProductView({ onCancel, onSave }: AddProductViewProps) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const objectUrlsRef = useRef<string[]>([])
+  const [form, setForm] = useState({
+    name: '',
+    brand: '',
+    model: '',
+    category: '',
+    expiration: '',
+    description: '',
+    supplier: '',
+    price: '',
+    stock: '',
+    threshold: '',
+  })
+  const [expirationDate, setExpirationDate] = useState<Date | null>(null)
+  const [isAvailable, setIsAvailable] = useState(true)
+  const [primaryImage, setPrimaryImage] = useState(0)
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
+  const [isDragging, setIsDragging] = useState(false)
+
+  function updateForm(field: keyof typeof form, value: string) {
+    setForm((currentForm) => ({ ...currentForm, [field]: value }))
+  }
+
+  function saveProduct() {
+    const nextId = `PRD-${Math.floor(1000 + Math.random() * 9000)}`
+
+    onSave({
+      name: form.name || 'New Product',
+      id: nextId,
+      brand: form.brand || 'Local Brand',
+      model: form.model || 'Standard',
+      category: form.category || 'Grocery',
+      price: `Rs.${form.price || '0'}`,
+      stock: Number(form.stock || 0),
+      rating: 4,
+      supplier: form.supplier || 'Supplier Name',
+      expiration: expirationDate ? expirationDate.toLocaleDateString('en-GB') : 'Not set',
+      description: form.description || 'No product description added.',
+    })
+  }
+
+  function addFiles(files: FileList | File[]) {
+    const acceptedFiles = Array.from(files)
+      .filter((file) => ['application/pdf', 'image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024)
+      .map((file) => {
+        const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : null
+
+        if (previewUrl) {
+          objectUrlsRef.current.push(previewUrl)
+        }
+
+        return { id: `${file.name}-${file.lastModified}-${Date.now()}-${Math.random()}`, name: file.name, previewUrl, type: file.type }
+      })
+
+    if (acceptedFiles.length > 0) {
+      setUploadedFiles((currentFiles) => [...currentFiles, ...acceptedFiles])
+    }
+  }
+
+  function deleteUploadedFile(fileId: string) {
+    setUploadedFiles((currentFiles) => {
+      const deletedFile = currentFiles.find((file) => file.id === fileId)
+
+      if (deletedFile?.previewUrl) {
+        URL.revokeObjectURL(deletedFile.previewUrl)
+        objectUrlsRef.current = objectUrlsRef.current.filter((url) => url !== deletedFile.previewUrl)
+      }
+
+      const nextFiles = currentFiles.filter((file) => file.id !== fileId)
+      setPrimaryImage((currentPrimaryImage) => Math.min(currentPrimaryImage, Math.max(0, nextFiles.length - 1)))
+
+      return nextFiles
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('inventory:save', saveProduct)
+    return () => window.removeEventListener('inventory:save', saveProduct)
+  })
+
+  useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [])
+
+  return (
+    <section className="inventory-detail-page add-product-page">
+      <Panel className="product-form-panel">
+        <h2>Product Entry Form</h2>
+        <div className="product-form-grid">
+          <FormField className="full" label="Product Name">
+            <input placeholder="e.g. Tata Salt" value={form.name} onChange={(event) => updateForm('name', event.target.value)} />
+          </FormField>
+          <FormField label="Product Brand">
+            <input placeholder="e.g. Tata" value={form.brand} onChange={(event) => updateForm('brand', event.target.value)} />
+          </FormField>
+          <FormField label="Product Model">
+            <input placeholder="e.g. Iodised" value={form.model} onChange={(event) => updateForm('model', event.target.value)} />
+          </FormField>
+          <FormField label="Category">
+            <select value={form.category} onChange={(event) => updateForm('category', event.target.value)}>
+              <option value="" disabled>Select Category</option>
+              <option>Grocery</option>
+              <option>Dairy</option>
+              <option>Snacks</option>
+              <option>Chocolates</option>
+            </select>
+          </FormField>
+          <FormField label="Expiration (If any)">
+            <DatePicker
+              calendarClassName="app-date-picker-calendar"
+              className="date-picker-input"
+              dateFormat="dd-MM-yyyy"
+              minDate={new Date()}
+              onChange={(date: Date | null) => {
+                setExpirationDate(date)
+                updateForm('expiration', date ? date.toLocaleDateString('en-GB') : '')
+              }}
+              placeholderText="dd-mm-yyyy"
+              selected={expirationDate}
+              showPopperArrow={false}
+            />
+          </FormField>
+          <FormField className="full" label="Description">
+            <textarea placeholder="Short Product description" rows={3} value={form.description} onChange={(event) => updateForm('description', event.target.value)}></textarea>
+          </FormField>
+          <FormField className="full" label="Supplier Name">
+            <input placeholder="Supplier Name" value={form.supplier} onChange={(event) => updateForm('supplier', event.target.value)} />
+          </FormField>
+          <FormField label="Selling price (Rs)">
+            <input type="number" placeholder="0.0" value={form.price} onChange={(event) => updateForm('price', event.target.value)} />
+          </FormField>
+          <FormField label="Stock quantity">
+            <input type="number" placeholder="0" value={form.stock} onChange={(event) => updateForm('stock', event.target.value)} />
+          </FormField>
+          <FormField className="full" label="Low-stock alert threshold" help="Get notified when stock falls below this number">
+            <input type="number" placeholder="e.g. 10" value={form.threshold} onChange={(event) => updateForm('threshold', event.target.value)} />
+          </FormField>
+        </div>
+
+        <div className="availability-row">
+          <div>
+            <strong>Stock availability</strong>
+            <span>Show this product as available for sale</span>
+          </div>
+          <ToggleSwitch checked={isAvailable} label="Stock availability" onChange={setIsAvailable} />
+        </div>
+      </Panel>
+
+      <Panel className="image-upload-panel">
+        <h2>Images</h2>
+        <div
+          className={isDragging ? 'upload-zone dragging' : 'upload-zone'}
+          onDragEnter={(event) => {
+            event.preventDefault()
+            setIsDragging(true)
+          }}
+          onDragOver={(event) => event.preventDefault()}
+          onDragLeave={(event) => {
+            event.preventDefault()
+            setIsDragging(false)
+          }}
+          onDrop={(event) => {
+            event.preventDefault()
+            setIsDragging(false)
+            addFiles(event.dataTransfer.files)
+          }}
+        >
+          <UploadIcon />
+          <p>
+            Drag & drop to upload multiple images<br />or{' '}
+            <button type="button" onClick={() => fileInputRef.current?.click()}>browse files</button>
+          </p>
+          <small>PDF, JPG, PNG • Max 5MB per file • Upload as many as needed</small>
+          <input
+            ref={fileInputRef}
+            className="file-input"
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple
+            onChange={(event) => {
+              if (event.target.files) {
+                addFiles(event.target.files)
+                event.target.value = ''
+              }
+            }}
+          />
+        </div>
+        <div className="image-slot-grid">
+          {uploadedFiles.map((file, slot) => (
+            <div
+              className={slot === primaryImage ? 'image-slot active' : 'image-slot'}
+              key={file.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => setPrimaryImage(slot)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  setPrimaryImage(slot)
+                }
+              }}
+            >
+              {file.previewUrl ? (
+                <img
+                  className="image-preview"
+                  src={file.previewUrl}
+                  alt={file.name}
+                />
+              ) : (
+                <ImageIcon />
+              )}
+              <strong>{file.name}</strong>
+              {slot === primaryImage && <span>Primary</span>}
+              <button
+                className="image-delete"
+                type="button"
+                aria-label={`Remove ${file.name}`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  deleteUploadedFile(file.id)
+                }}
+              >
+                <TrashIcon />
+              </button>
+            </div>
+          ))}
+          <button className="image-slot add-more" type="button" onClick={() => fileInputRef.current?.click()}>
+            <UploadIcon />
+            <small>Add more</small>
+          </button>
+        </div>
+        <p className="image-help">Drag images to reorder - first image is set as primary</p>
+      </Panel>
+
+      <PageActions onCancel={onCancel} onSave={saveProduct} />
+    </section>
+  )
+}
+
+type ProductProfileViewProps = {
+  onDelete: () => void
+  product: Product
+}
+
+function ProductProfileView({ onDelete, product }: ProductProfileViewProps) {
+  const [threshold, setThreshold] = useState('5')
+  const [isVisible, setIsVisible] = useState(true)
+  const [selectedImage, setSelectedImage] = useState(0)
+
+  return (
+    <section className="inventory-detail-page product-profile-page">
+      <aside className="profile-left-column">
+        <Panel className="image-gallery-panel">
+          <div className="main-product-image">
+            <DummyProductImage name={product.name} />
+          </div>
+          <div className="thumb-row">
+            {[0, 1, 2, 3].map((thumb) => (
+              <button
+                className={thumb === selectedImage ? 'active' : ''}
+                key={thumb}
+                type="button"
+              onClick={() => setSelectedImage(thumb)}
+            >
+                <DummyProductImage name={product.name} compact />
+              </button>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel className="product-details-panel">
+          <h2>Product Details</h2>
+          {[
+            ['Product ID', product.id],
+            ['Brand', product.brand || product.name.split(' ')[0]],
+            ['Model', product.model || product.name],
+            ['Category', product.category],
+            ['Supplier', product.supplier || 'ITC Foods ltd'],
+            ['Expiration', product.expiration || '12 Aug, 2026'],
+          ].map(([label, value]) => (
+            <div className="detail-pair" key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
+            </div>
+          ))}
+        </Panel>
+
+        <Panel className="compact-setting-panel">
+          <div>
+            <strong>Stock Threshold</strong>
+            <span>Set low stock threshold for notification</span>
+          </div>
+          <input value={threshold} onChange={(event) => setThreshold(event.target.value)} />
+        </Panel>
+        <Panel className="compact-setting-panel">
+          <div>
+            <strong>Visibility Status</strong>
+            <span>Show this product as available for sale</span>
+          </div>
+          <ToggleSwitch checked={isVisible} label="Visibility status" onChange={setIsVisible} />
+        </Panel>
+        <button className="delete-profile-button" type="button" onClick={onDelete}>Delete Product ? <TrashIcon /></button>
+      </aside>
+
+      <div className="profile-main-column">
+        <Panel className="profile-summary-panel">
+          <div>
+            <h2>{product.name}</h2>
+            <small>{product.id}&nbsp;&nbsp; Added 14 May 2026</small>
+            <div className="profile-tags">
+              <span>{product.category}</span>
+              <span>{product.stock > 80 ? 'High Demand' : product.stock <= 50 ? 'Low Stock' : 'In Stock'}</span>
+            </div>
+          </div>
+          <div className="profile-price">
+            <strong>{product.price}</strong>
+            <span>{product.stock} in Stock</span>
+          </div>
+        </Panel>
+
+        <Panel className="profile-section">
+          <h2>Description</h2>
+          <p>{product.description || 'Premium product with reliable local supply and strong customer demand.'}</p>
+        </Panel>
+
+        <Panel className="profile-section">
+          <h2>Metrics</h2>
+          <div className="profile-metric-grid">
+            <div><span>Total Units sold</span><strong>{Math.max(42, product.stock * 3)}</strong><small>+18% sold this month</small></div>
+            <div><span>Revenue Generated</span><strong>Rs.{(product.stock * Number(product.price.replace(/\D/g, '') || 1)).toLocaleString('en-IN')}</strong><small>+22% this month</small></div>
+          </div>
+        </Panel>
+
+        <Panel className="profile-section review-panel">
+          <h2>Ratings and Review</h2>
+          <div className="rating-summary"><strong>4.8</strong><span>★★★★★</span><small>Based on 142 Reviews</small></div>
+          <div className="review-row"><b>Priya S</b><span>2 Days ago</span><p>Fresh and Good Quality</p></div>
+          <div className="review-row"><b>Meera P</b><span>3 Days ago</span><p>Highly Recommend for soft rotis</p></div>
+          <button className="text-link small" type="button">See all</button>
+        </Panel>
+
+        <Panel className="profile-section offer-status-panel">
+          <h2>Offer and Discount status (1)</h2>
+          <div className="offer-status-row">
+            <span className="discount-icon">%</span>
+            <div><strong>SAVE 20</strong><p>20% off - Valid upto May 15</p></div>
+            <em>ACTIVE</em>
+          </div>
+        </Panel>
+
+        <Panel className="profile-section activity-panel">
+          <h2>Activity Log</h2>
+          <div><strong>Stock Update</strong><p>New stock arrival <b>+20</b> on 9th May 2026 - Expiration on 29th May 2026</p><span>Overall stock <b>8 +20</b></span></div>
+          <div><strong>Stock Update</strong><p>New stock arrival <b>+12</b> on 29th Apr 2026 - Expiration on 19th May 2026</p><span>Overall stock <b>2 +12</b></span></div>
+        </Panel>
       </div>
     </section>
   )

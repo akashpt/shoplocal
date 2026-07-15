@@ -7,10 +7,13 @@ import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
 import type { PageId } from './types'
 
+type InventoryView = 'list' | 'add' | 'profile'
+
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
   const [isLoading, setIsLoading] = useState(true)
   const [inventorySearch, setInventorySearch] = useState('')
+  const [inventoryView, setInventoryView] = useState<InventoryView>('list')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -33,12 +36,30 @@ function App() {
       )}
       <AppShell
         activePage={activePage}
+        inventoryView={inventoryView}
         inventorySearch={inventorySearch}
+        onAddProduct={() => {
+          setActivePage('inventory')
+          setInventoryView('add')
+        }}
+        onInventoryCancel={() => setInventoryView('list')}
+        onInventorySave={() => window.dispatchEvent(new Event('inventory:save'))}
         onInventorySearchChange={setInventorySearch}
-        onNavigate={setActivePage}
+        onNavigate={(page) => {
+          setActivePage(page)
+          if (page !== 'inventory') {
+            setInventoryView('list')
+          }
+        }}
       >
         {activePage === 'dashboard' && <Dashboard />}
-        {activePage === 'inventory' && <Inventory searchQuery={inventorySearch} />}
+        {activePage === 'inventory' && (
+          <Inventory
+            searchQuery={inventorySearch}
+            view={inventoryView}
+            onViewChange={setInventoryView}
+          />
+        )}
         {activePage === 'orders' && <Orders />}
         {activePage === 'offers' && <Offers />}
       </AppShell>

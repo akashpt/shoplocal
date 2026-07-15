@@ -7,7 +7,11 @@ import { Sidebar } from '../components/layout/Sidebar'
 type MainLayoutProps = {
   activePage: PageId
   children: ReactNode
+  inventoryView: 'list' | 'add' | 'profile'
   inventorySearch: string
+  onAddProduct: () => void
+  onInventoryCancel: () => void
+  onInventorySave: () => void
   onInventorySearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
@@ -15,7 +19,11 @@ type MainLayoutProps = {
 export function MainLayout({
   activePage,
   children,
+  inventoryView,
   inventorySearch,
+  onAddProduct,
+  onInventoryCancel,
+  onInventorySave,
   onInventorySearchChange,
   onNavigate,
 }: MainLayoutProps) {
@@ -38,7 +46,11 @@ export function MainLayout({
       <main className="content-area">
         <Header
           activePage={activePage}
+          inventoryView={inventoryView}
           inventorySearch={inventorySearch}
+          onAddProduct={onAddProduct}
+          onInventoryCancel={onInventoryCancel}
+          onInventorySave={onInventorySave}
           onInventorySearchChange={onInventorySearchChange}
           onMenuClick={() => setIsSidebarOpen(true)}
         />
