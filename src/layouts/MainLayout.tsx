@@ -7,10 +7,18 @@ import { Sidebar } from '../components/layout/Sidebar'
 type MainLayoutProps = {
   activePage: PageId
   children: ReactNode
+  inventorySearch: string
+  onInventorySearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
-export function MainLayout({ activePage, children, onNavigate }: MainLayoutProps) {
+export function MainLayout({
+  activePage,
+  children,
+  inventorySearch,
+  onInventorySearchChange,
+  onNavigate,
+}: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   function handleNavigate(page: PageId) {
@@ -28,7 +36,12 @@ export function MainLayout({ activePage, children, onNavigate }: MainLayoutProps
       />
       <Sidebar activePage={activePage} onNavigate={handleNavigate} />
       <main className="content-area">
-        <Header activePage={activePage} onMenuClick={() => setIsSidebarOpen(true)} />
+        <Header
+          activePage={activePage}
+          inventorySearch={inventorySearch}
+          onInventorySearchChange={onInventorySearchChange}
+          onMenuClick={() => setIsSidebarOpen(true)}
+        />
         <div className="page-content">
           {children}
         </div>

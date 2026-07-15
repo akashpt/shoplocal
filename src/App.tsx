@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
 import './App.css'
 import { AppShell } from './components/AppShell'
 import { Dashboard } from './pages/Dashboard'
@@ -8,16 +7,10 @@ import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
 import type { PageId } from './types'
 
-const pages: Record<PageId, ReactNode> = {
-  dashboard: <Dashboard />,
-  inventory: <Inventory />,
-  orders: <Orders />,
-  offers: <Offers />,
-}
-
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
   const [isLoading, setIsLoading] = useState(true)
+  const [inventorySearch, setInventorySearch] = useState('')
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
@@ -38,8 +31,16 @@ function App() {
           <strong>ShopLocal</strong>
         </div>
       )}
-      <AppShell activePage={activePage} onNavigate={setActivePage}>
-        {pages[activePage]}
+      <AppShell
+        activePage={activePage}
+        inventorySearch={inventorySearch}
+        onInventorySearchChange={setInventorySearch}
+        onNavigate={setActivePage}
+      >
+        {activePage === 'dashboard' && <Dashboard />}
+        {activePage === 'inventory' && <Inventory searchQuery={inventorySearch} />}
+        {activePage === 'orders' && <Orders />}
+        {activePage === 'offers' && <Offers />}
       </AppShell>
     </>
   )

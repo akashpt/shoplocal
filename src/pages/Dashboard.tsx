@@ -75,6 +75,8 @@ const pendingOrders = [
   { id: '#ORD-8846', customer: 'Priya Ashok', total: 'Rs.640' },
   { id: '#ORD-8848', customer: 'Ashok Mani', total: 'Rs.325' },
   { id: '#ORD-8856', customer: 'Mani Saravanan', total: 'Rs.460' },
+  { id: '#ORD-8861', customer: 'Kavya R', total: 'Rs.720' },
+  { id: '#ORD-8870', customer: 'Arjun V', total: 'Rs.510' },
 ]
 
 const todayOrders = [
@@ -85,6 +87,8 @@ const todayOrders = [
   { id: '#ORD-8825', customer: 'Neha P', total: 'Rs.980', status: 'Pending' },
   { id: '#ORD-8826', customer: 'Sameer D', total: 'Rs.1500', status: 'Completed' },
 ]
+
+const ordersPerPage = 4
 
 const activeOffers = [
   { title: 'SAVE20', meta: 'Expires May15 - 48 Uses', discount: '20% off' },
@@ -167,8 +171,18 @@ function DashboardIcon({ name }: { name: IconName }) {
 export function Dashboard() {
   const [chartRange, setChartRange] = useState<ChartRange>('W')
   const [enabledOffers, setEnabledOffers] = useState(() => activeOffers.map((offer) => offer.title))
+  const [ordersPage, setOrdersPage] = useState(1)
+  const [showAllPendingOrders, setShowAllPendingOrders] = useState(false)
+  const [showOnlyEnabledOffers, setShowOnlyEnabledOffers] = useState(false)
+  const [lastExport, setLastExport] = useState<string | null>(null)
   const activeChartData = chartData[chartRange]
   const maxChartValue = Math.max(...activeChartData.flatMap((item) => [item.revenue, item.expenses]))
+  const totalOrderPages = Math.ceil(todayOrders.length / ordersPerPage)
+  const visibleTodayOrders = todayOrders.slice((ordersPage - 1) * ordersPerPage, ordersPage * ordersPerPage)
+  const visiblePendingOrders = showAllPendingOrders ? pendingOrders : pendingOrders.slice(0, 4)
+  const visibleOffers = showOnlyEnabledOffers
+    ? activeOffers.filter((offer) => enabledOffers.includes(offer.title))
+    : activeOffers
   const chartTicks =
     chartRange === 'W'
       ? [0, 5000, 10000, 15000, 20000]
@@ -182,6 +196,29 @@ export function Dashboard() {
         ? currentOffers.filter((offerTitle) => offerTitle !== title)
         : [...currentOffers, title],
     )
+  }
+
+  function exportReport(reportTitle: string) {
+    const rows =
+      reportTitle === 'Orders'
+        ? todayOrders.map((order) => [order.id, order.customer, order.total, order.status])
+        : reportTitle === 'Invoices'
+          ? todayOrders.map((order) => [`INV-${order.id.replace('#ORD-', '')}`, order.customer, order.total, 'Paid'])
+          : [
+              ['EXP-101', 'Packaging', 'Rs.240', 'Today'],
+              ['EXP-102', 'Delivery', 'Rs.380', 'Today'],
+              ['EXP-103', 'Utilities', 'Rs.900', 'This week'],
+            ]
+    const csv = [['ID', 'Name', 'Amount', 'Status'], ...rows].map((row) => row.join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = `${reportTitle.toLowerCase()}-report.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+    setLastExport(reportTitle)
   }
 
   return (
@@ -267,7 +304,7 @@ export function Dashboard() {
                 <span>Total Amount</span>
                 <span>Status</span>
               </div>
-              {todayOrders.map((order) => (
+              {visibleTodayOrders.map((order) => (
                 <div className="orders-table-row" key={order.id}>
                   <strong>{order.id}</strong>
                   <span>{order.customer}</span>
@@ -279,16 +316,36 @@ export function Dashboard() {
               ))}
             </div>
             <div className="table-footer">
-              <span>Showing 1 - 4of 94 Orders</span>
+              <span>
+                Showing {(ordersPage - 1) * ordersPerPage + 1} -{' '}
+                {Math.min(ordersPage * ordersPerPage, todayOrders.length)} of {todayOrders.length} Orders
+              </span>
               <div className="pagination" aria-label="Pagination">
-                <button className="ghost" type="button" aria-label="Previous">
+                <button
+                  className={ordersPage === 1 ? 'ghost' : ''}
+                  type="button"
+                  aria-label="Previous"
+                  disabled={ordersPage === 1}
+                  onClick={() => setOrdersPage((page) => Math.max(1, page - 1))}
+                >
                   <DashboardIcon name="chevron" />
                 </button>
-                <button className="active" type="button">1</button>
-                <button type="button">2</button>
-                <button type="button">...</button>
-                <button type="button">4</button>
-                <button type="button" aria-label="Next">
+                {Array.from({ length: totalOrderPages }, (_, index) => index + 1).map((page) => (
+                  <button
+                    className={ordersPage === page ? 'active' : ''}
+                    key={page}
+                    type="button"
+                    onClick={() => setOrdersPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  aria-label="Next"
+                  disabled={ordersPage === totalOrderPages}
+                  onClick={() => setOrdersPage((page) => Math.min(totalOrderPages, page + 1))}
+                >
                   <DashboardIcon name="chevron" />
                 </button>
               </div>
@@ -300,10 +357,16 @@ export function Dashboard() {
           <article className="panel pending-panel">
             <div className="panel-header">
               <h2>Pending Orders</h2>
-              <button className="text-link" type="button">View all</button>
+              <button
+                className="text-link"
+                type="button"
+                onClick={() => setShowAllPendingOrders((isShowingAll) => !isShowingAll)}
+              >
+                {showAllPendingOrders ? 'Show less' : 'View all'}
+              </button>
             </div>
             <div className="pending-list">
-              {pendingOrders.map((order) => (
+              {visiblePendingOrders.map((order) => (
                 <div className="pending-row" key={order.id}>
                   <div>
                     <strong>{order.id}</strong>
@@ -319,10 +382,16 @@ export function Dashboard() {
           <article className="panel offers-panel">
             <div className="panel-header compact">
               <h2>Active Offers</h2>
-              <button className="text-link small" type="button">Manage</button>
+              <button
+                className="text-link small"
+                type="button"
+                onClick={() => setShowOnlyEnabledOffers((showOnlyEnabled) => !showOnlyEnabled)}
+              >
+                {showOnlyEnabledOffers ? 'Show all' : 'Enabled only'}
+              </button>
             </div>
             <div className="active-offers-list">
-              {activeOffers.map((offer) => (
+              {visibleOffers.map((offer) => (
                 <div className="active-offer-row" key={offer.title}>
                   <div>
                     <strong>{offer.title}</strong>
@@ -347,9 +416,9 @@ export function Dashboard() {
             <div className="panel-header compact">
               <div>
                 <h2>Export Report</h2>
-                <p>Download store data as CSV or PDF</p>
+                <p>{lastExport ? `${lastExport} report exported` : 'Download store data as CSV'}</p>
               </div>
-              <button className="text-link small" type="button">Manage</button>
+              <button className="text-link small" type="button" onClick={() => setLastExport(null)}>Clear</button>
             </div>
             <div className="export-list">
               {exportReports.map((report) => (
@@ -361,7 +430,7 @@ export function Dashboard() {
                     <strong>{report.title}</strong>
                     <small>{report.meta}</small>
                   </div>
-                  <button type="button">
+                  <button type="button" onClick={() => exportReport(report.title)}>
                     <DashboardIcon name="download" />
                     Export
                   </button>

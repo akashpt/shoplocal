@@ -3,6 +3,8 @@ import type { PageId } from '../../types'
 
 type HeaderProps = {
   activePage: PageId
+  inventorySearch: string
+  onInventorySearchChange: (value: string) => void
   onMenuClick: () => void
 }
 
@@ -13,10 +15,16 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'offers', label: 'Offers' },
 ]
 
-export function Header({ activePage, onMenuClick }: HeaderProps) {
+export function Header({
+  activePage,
+  inventorySearch,
+  onInventorySearchChange,
+  onMenuClick,
+}: HeaderProps) {
   const pageTitle = navItems.find((item) => item.id === activePage)?.label || 'Dashboard'
   const [openMenu, setOpenMenu] = useState<'notifications' | 'profile' | null>(null)
   const headerRef = useRef<HTMLElement | null>(null)
+  const isInventoryPage = activePage === 'inventory'
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -55,16 +63,46 @@ export function Header({ activePage, onMenuClick }: HeaderProps) {
         <h1>{pageTitle}</h1>
       </div>
       <div className="topbar-right">
+        {isInventoryPage && (
+          <label className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.5 16.5 4 4" />
+            </svg>
+            <input
+              type="search"
+              placeholder="Search products by name or ID..."
+              value={inventorySearch}
+              onChange={(event) => onInventorySearchChange(event.target.value)}
+            />
+          </label>
+        )}
         <div className="action-buttons">
-          <button className="action-button" type="button">
-            Add Product
-          </button>
-          <button className="action-button" type="button">
-            Add Expense
-          </button>
-          <button className="action-button primary" type="button">
-            Create Offer
-          </button>
+          {isInventoryPage ? (
+            <>
+              <button className="action-button" type="button">
+                Import CSV
+              </button>
+              <button className="action-button" type="button">
+                Export CSV
+              </button>
+              <button className="action-button primary" type="button">
+                Add Product
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="action-button" type="button">
+                Add Product
+              </button>
+              <button className="action-button" type="button">
+                Add Expense
+              </button>
+              <button className="action-button primary" type="button">
+                Create Offer
+              </button>
+            </>
+          )}
         </div>
         <div className="header-menu">
           <button

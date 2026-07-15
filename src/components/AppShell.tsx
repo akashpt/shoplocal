@@ -5,12 +5,25 @@ import { MainLayout } from '../layouts/MainLayout'
 type AppShellProps = {
   activePage: PageId
   children: ReactNode
+  inventorySearch: string
+  onInventorySearchChange: (value: string) => void
   onNavigate: (page: PageId) => void
 }
 
-export function AppShell({ activePage, children, onNavigate }: AppShellProps) {
+export function AppShell({
+  activePage,
+  children,
+  inventorySearch,
+  onInventorySearchChange,
+  onNavigate,
+}: AppShellProps) {
   return (
-    <MainLayout activePage={activePage} onNavigate={onNavigate}>
+    <MainLayout
+      activePage={activePage}
+      inventorySearch={inventorySearch}
+      onInventorySearchChange={onInventorySearchChange}
+      onNavigate={onNavigate}
+    >
       {children}
     </MainLayout>
   )
