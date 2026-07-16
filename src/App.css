@@ -162,6 +162,19 @@ button:not(:disabled):active {
   width: 15px;
 }
 
+.global-toast-slot {
+  max-width: min(420px, calc(100vw - 28px));
+  pointer-events: none;
+  position: fixed;
+  right: 24px;
+  top: 66px;
+  z-index: 90;
+}
+
+.global-toast-slot .app-toast {
+  pointer-events: auto;
+}
+
 .page-loader {
   align-items: center;
   animation: loaderFade 0.25s ease 0.55s forwards;
@@ -6931,6 +6944,16 @@ button:not(:disabled):active {
   .user-avatar {
     height: 38px;
     width: 38px;
+  }
+
+  .global-toast-slot {
+    left: 14px;
+    right: 14px;
+    top: 62px;
+  }
+
+  .global-toast-slot .app-toast {
+    width: 100%;
   }
 }
 

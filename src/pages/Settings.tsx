@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { Panel } from '../components/ui/Panel'
-import { Toast } from '../components/ui/Toast'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
+import { showToast } from '../utils/toast'
 
 type SettingsTab = 'store' | 'preferences' | 'account'
 type SettingsDropdownId = 'language' | 'dateFormat' | 'currency' | 'industry'
@@ -17,12 +17,10 @@ const preferenceDropdowns = {
 
 export function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('store')
-  const [savedAt, setSavedAt] = useState('')
 
   useEffect(() => {
     function handleSave() {
-      setSavedAt('Changes saved')
-      window.setTimeout(() => setSavedAt(''), 1600)
+      showToast('Changes saved successfully.', 'success')
     }
 
     window.addEventListener('settings:save', handleSave)
@@ -37,7 +35,6 @@ export function Settings() {
         <SettingsTabButton activeTab={activeTab} id="account" icon="user" title="Account" subtitle="Security · Export · Help · Legal" onChange={setActiveTab} />
       </aside>
       <div className="settings-content">
-        {savedAt && <div className="settings-save-toast"><Toast message={savedAt} tone="success" /></div>}
         {activeTab === 'store' && <StoreSettings />}
         {activeTab === 'preferences' && <PreferencesSettings />}
         {activeTab === 'account' && <AccountSettings />}
@@ -83,6 +80,7 @@ function StoreSettings() {
   function addMember() {
     const id = Date.now()
     setTeam((currentTeam) => [...currentTeam, { id, initials: `E${currentTeam.length}`, name: `Employee${currentTeam.length}`, email: `employee${currentTeam.length}@gmail.com`, role: 'Staff', tone: 'blue' }])
+    showToast('Team member added.', 'success')
   }
 
   return (
@@ -102,6 +100,9 @@ function StoreSettings() {
                 const file = event.target.files?.[0]
                 setPhotoName(file?.name || '')
                 setPhotoPreview(file ? URL.createObjectURL(file) : '')
+                if (file) {
+                  showToast('Store photo uploaded.', 'success')
+                }
               }}
             />
             <button className="action-button primary" type="button" onClick={() => fileInputRef.current?.click()}>Upload Photo</button>
@@ -111,6 +112,7 @@ function StoreSettings() {
               if (fileInputRef.current) {
                 fileInputRef.current.value = ''
               }
+              showToast('Store photo removed.', 'error')
             }}>Remove</button>
             <small>{photoName || 'JPG or PNG · Max 2MB · Appears on profile & directory'}</small>
           </div>
@@ -139,7 +141,10 @@ function StoreSettings() {
               <span className={`team-avatar ${member.tone}`}>{member.initials}</span>
               <div><strong>{member.name}</strong><small>{member.email}</small></div>
               <em>{member.role}</em>
-              {member.role !== 'Owner' && <button type="button" onClick={() => setTeam((currentTeam) => currentTeam.filter((item) => item.id !== member.id))}>Remove</button>}
+              {member.role !== 'Owner' && <button type="button" onClick={() => {
+                setTeam((currentTeam) => currentTeam.filter((item) => item.id !== member.id))
+                showToast('Team member removed.', 'error')
+              }}>Remove</button>}
             </div>
           ))}
         </div>

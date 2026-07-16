@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { AppShell } from './components/AppShell'
 import { AppIcon } from './components/ui/AppIcon'
+import { Toast, type ToastTone } from './components/ui/Toast'
 import { Dashboard } from './pages/Dashboard'
 import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
@@ -12,6 +13,7 @@ import { Orders } from './pages/Orders'
 import { Settings } from './pages/Settings'
 import { Tables } from './pages/Tables'
 import type { PageId } from './types'
+import { showToast } from './utils/toast'
 
 type InventoryView = 'list' | 'add' | 'profile'
 type OrdersView = 'list' | 'details'
@@ -32,10 +34,32 @@ function App() {
   const [expensesView, setExpensesView] = useState<ExpensesView>('list')
   const [invoicesSearch, setInvoicesSearch] = useState('')
   const [invoicesView, setInvoicesView] = useState<InvoicesView>('list')
+  const [globalToast, setGlobalToast] = useState<{ message: string; tone: ToastTone } | null>(null)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 650)
     return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    let timer: number | undefined
+
+    function handleToast(event: Event) {
+      const { message, tone = 'info' } = (event as CustomEvent<{ message: string; tone?: ToastTone }>).detail || {}
+      if (!message) {
+        return
+      }
+
+      setGlobalToast({ message, tone })
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => setGlobalToast(null), 2200)
+    }
+
+    window.addEventListener('app:toast', handleToast)
+    return () => {
+      window.removeEventListener('app:toast', handleToast)
+      window.clearTimeout(timer)
+    }
   }, [])
 
   return (
@@ -46,6 +70,11 @@ function App() {
             <AppIcon name="layers" />
           </div>
           <strong>ShopLocal</strong>
+        </div>
+      )}
+      {globalToast && (
+        <div className="global-toast-slot">
+          <Toast message={globalToast.message} tone={globalToast.tone} />
         </div>
       )}
       <AppShell
@@ -63,34 +92,59 @@ function App() {
         onAddProduct={() => {
           setActivePage('inventory')
           setInventoryView('add')
+          showToast('Product form opened.', 'info')
         }}
-        onInventoryCancel={() => setInventoryView('list')}
+        onInventoryCancel={() => {
+          setInventoryView('list')
+          showToast('Product changes cancelled.', 'warning')
+        }}
         onInventorySave={() => window.dispatchEvent(new Event('inventory:save'))}
         onInventorySearchChange={setInventorySearch}
         onOrdersBack={() => setOrdersView('list')}
-        onOrdersPrint={() => window.print()}
+        onOrdersPrint={() => {
+          window.print()
+          showToast('Print dialog opened.', 'success')
+        }}
         onOrdersSearchChange={setOrdersSearch}
         onCreateOffer={() => {
           setActivePage('offers')
           setOffersView('create')
+          showToast('Offer form opened.', 'info')
         }}
-        onOffersCancel={() => setOffersView('list')}
-        onOffersSave={() => setOffersView('list')}
+        onOffersCancel={() => {
+          setOffersView('list')
+          showToast('Offer creation cancelled.', 'warning')
+        }}
+        onOffersSave={() => {
+          setOffersView('list')
+          showToast('Offer created successfully.', 'success')
+        }}
         onOffersSearchChange={setOffersSearch}
         onAddExpense={() => {
           setActivePage('expenses')
           setExpensesView('add')
+          showToast('Expense form opened.', 'info')
         }}
-        onExpensesCancel={() => setExpensesView('list')}
+        onExpensesCancel={() => {
+          setExpensesView('list')
+          showToast('Expense entry cancelled.', 'warning')
+        }}
         onExpensesSave={() => window.dispatchEvent(new Event('expenses:save'))}
         onExpensesSearchChange={setExpensesSearch}
         onGenerateInvoice={() => {
           setActivePage('invoices')
           setInvoicesView('generate')
+          showToast('Invoice generator opened.', 'info')
         }}
-        onInvoicesCancel={() => setInvoicesView('list')}
+        onInvoicesCancel={() => {
+          setInvoicesView('list')
+          showToast('Invoice generation cancelled.', 'warning')
+        }}
         onInvoicesSave={() => window.dispatchEvent(new Event('invoices:save'))}
-        onInvoicesPrint={() => window.print()}
+        onInvoicesPrint={() => {
+          window.print()
+          showToast('Invoice print dialog opened.', 'success')
+        }}
         onInvoicesShare={() => window.dispatchEvent(new Event('invoices:share'))}
         onInvoicesDownload={() => window.dispatchEvent(new Event('invoices:download'))}
         onInvoicesSearchChange={setInvoicesSearch}

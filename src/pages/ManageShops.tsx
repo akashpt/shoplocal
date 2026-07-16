@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AppIcon } from '../components/ui/AppIcon'
+import { showToast } from '../utils/toast'
 
 type ShopStatus = 'Open' | 'Closed'
 
@@ -48,6 +49,7 @@ export function ManageShops() {
     })
     setIsModalOpen(false)
     setEditingShop(null)
+    showToast(editingShop ? 'Shop details updated.' : 'New shop added successfully.', 'success')
   }
 
   function openSettings(shop: Shop) {
@@ -95,7 +97,10 @@ export function ManageShops() {
               {shop.id === activeShopId ? (
                 <button className="active-shop-button" type="button"><CheckIcon />Active shop</button>
               ) : (
-                <button className="switch-shop-button" type="button" onClick={() => setActiveShopId(shop.id)}><SwitchIcon />Switch</button>
+                <button className="switch-shop-button" type="button" onClick={() => {
+                  setActiveShopId(shop.id)
+                  showToast(`${shop.name} is now active.`, 'success')
+                }}><SwitchIcon />Switch</button>
               )}
               <button className="shop-settings-button" type="button" onClick={() => openSettings(shop)}><GearIcon />Settings</button>
             </div>
@@ -104,6 +109,7 @@ export function ManageShops() {
         <button className="add-shop-card" type="button" onClick={() => {
           setEditingShop(null)
           setIsModalOpen(true)
+          showToast('New shop form opened.', 'info')
         }}>
           <span>+</span>
           <strong>Add a new shop</strong>
@@ -138,10 +144,15 @@ function ShopModal({ shop, onClose, onSave }: { shop: Shop | null; onClose: () =
   const [mapLink, setMapLink] = useState(shop?.mapLink || '')
 
   function submit() {
+    if (!name.trim() || !address.trim() || !contact.trim()) {
+      showToast('Shop name, address, and contact number are required.', 'error')
+      return
+    }
+
     onSave({
       id: shop?.id || Date.now(),
-      name: name.trim() || 'Store_name - location',
-      address: address.trim() || 'Full address with pincode',
+      name: name.trim(),
+      address: address.trim(),
       contact,
       hours,
       mapLink,

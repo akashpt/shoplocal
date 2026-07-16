@@ -5,6 +5,7 @@ import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
+import { showToast } from '../utils/toast'
 
 type ExpensesProps = {
   onViewChange: (view: 'list' | 'add') => void
@@ -129,12 +130,14 @@ export function Expenses({ onViewChange, searchQuery, view }: ExpensesProps) {
 
   function deleteExpense(id: number) {
     setExpenses((currentExpenses) => currentExpenses.filter((expense) => expense.id !== id))
+    showToast('Expense deleted successfully.', 'error')
   }
 
   function resetFilters() {
     setCategoryFilter('All Categories')
     setPaymentFilter('All Payment Modes')
     setDateFilter('This month')
+    showToast('Expense filters reset.', 'info')
   }
 
   useEffect(() => {
@@ -162,6 +165,7 @@ export function Expenses({ onViewChange, searchQuery, view }: ExpensesProps) {
   function openEditExpense(expense: ExpenseRow) {
     setEditingExpense(expense)
     onViewChange('add')
+    showToast('Expense opened for editing.', 'info')
   }
 
   function saveExpense(expense: ExpenseRow) {
@@ -174,6 +178,7 @@ export function Expenses({ onViewChange, searchQuery, view }: ExpensesProps) {
     })
     setEditingExpense(null)
     onViewChange('list')
+    showToast(expense.id === editingExpense?.id ? 'Expense updated successfully.' : 'Expense added successfully.', 'success')
   }
 
   if (view === 'add') {
@@ -354,11 +359,21 @@ function AddExpenseView({
 
   function handleSave() {
     const parsedAmount = Number(amount.replace(/[^\d.]/g, ''))
+    if (!title.trim()) {
+      showToast('Expense title is required.', 'error')
+      return
+    }
+
+    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+      showToast('Enter a valid expense amount.', 'error')
+      return
+    }
+
     onSave({
       id: expense?.id || Date.now(),
-      name: title.trim() || 'Untitled expense',
+      name: title.trim(),
       category,
-      amount: Number.isFinite(parsedAmount) ? parsedAmount : 0,
+      amount: parsedAmount,
       payment,
       date: previewDate,
       notes: notes.trim() || '---',

@@ -5,9 +5,10 @@ import { AppIcon } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
-import { Toast, type ToastTone } from '../components/ui/Toast'
+import type { ToastTone } from '../components/ui/Toast'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 import heroImage from '../assets/hero.png'
+import { showToast } from '../utils/toast'
 
 type Product = {
   name: string
@@ -216,7 +217,6 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null)
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [inventoryNotice, setInventoryNotice] = useState<{ message: string; tone: ToastTone } | null>(null)
   const categories = useMemo(
     () => ['All Categories', ...Array.from(new Set(products.map((product) => product.category)))],
     [products],
@@ -275,7 +275,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
   }
 
   function showInventoryNotice(message: string, tone: ToastTone = 'info') {
-    setInventoryNotice({ message, tone })
+    showToast(message, tone)
   }
 
   function applyAlertPanel(panelTitle: string) {
@@ -408,8 +408,6 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
           onOpenChange={setOpenDropdown}
         />
       </div>
-      {inventoryNotice && <Toast message={inventoryNotice.message} tone={inventoryNotice.tone} />}
-
       <div className="inventory-grid">
         <article className="panel inventory-list-panel">
           <div className="panel-header">

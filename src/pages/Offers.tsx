@@ -6,6 +6,7 @@ import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
+import { showToast } from '../utils/toast'
 
 type OffersProps = {
   onViewChange: (view: 'list' | 'create') => void
@@ -84,6 +85,7 @@ export function Offers({ onViewChange, searchQuery, view }: OffersProps) {
     setActiveOffers((currentOffers) =>
       checked ? Array.from(new Set([...currentOffers, id])) : currentOffers.filter((offerId) => offerId !== id),
     )
+    showToast(checked ? 'Offer activated successfully.' : 'Offer paused successfully.', checked ? 'success' : 'warning')
   }
 
   function toggleSelection(id: number, checked: boolean) {
@@ -101,11 +103,17 @@ export function Offers({ onViewChange, searchQuery, view }: OffersProps) {
   }
 
   function updateSelectedOffers(checked: boolean) {
+    if (selectedOffers.length === 0) {
+      showToast('Select at least one offer first.', 'warning')
+      return
+    }
+
     setActiveOffers((currentOffers) =>
       checked
         ? Array.from(new Set([...currentOffers, ...selectedOffers]))
         : currentOffers.filter((offerId) => !selectedOffers.includes(offerId)),
     )
+    showToast(checked ? 'Selected offers activated.' : 'Selected offers paused.', checked ? 'success' : 'warning')
   }
 
   if (view === 'create') {
@@ -141,7 +149,10 @@ export function Offers({ onViewChange, searchQuery, view }: OffersProps) {
             <span>{selectedOffers.length} selected</span>
             <button type="button" onClick={() => updateSelectedOffers(true)}>Activate</button>
             <button type="button" onClick={() => updateSelectedOffers(false)}>Pause</button>
-            <button type="button" onClick={() => setSelectedOffers([])}>Clear</button>
+            <button type="button" onClick={() => {
+              setSelectedOffers([])
+              showToast('Offer selection cleared.', 'info')
+            }}>Clear</button>
           </div>
         )}
         <div className="offer-card-list">
@@ -230,6 +241,7 @@ function CreateOfferView({ onCancel, onSave }: { onCancel: () => void; onSave: (
 
   function generateCode() {
     setCouponCode(`${(offerName || 'WEEKEND').replace(/\s+/g, '').slice(0, 7).toUpperCase()}${Math.floor(10 + Math.random() * 89)}`)
+    showToast('Coupon code generated.', 'success')
   }
 
   function toggleCoupon(checked: boolean) {
@@ -237,17 +249,23 @@ function CreateOfferView({ onCancel, onSave }: { onCancel: () => void; onSave: (
     if (checked && !couponAllowedTypes.includes(offerType)) {
       setOfferType('Flat discount')
     }
+    showToast(checked ? 'Coupon code enabled.' : 'Coupon code disabled.', 'info')
   }
 
   function addProduct() {
     const nextProduct = productOptions.find((product) => !selectedProducts.includes(product))
     if (nextProduct) {
       setSelectedProducts((currentProducts) => [...currentProducts, nextProduct])
+      showToast(`${nextProduct} added to offer.`, 'success')
+      return
     }
+
+    showToast('All products are already selected.', 'warning')
   }
 
   function removeProduct(product: string) {
     setSelectedProducts((currentProducts) => currentProducts.filter((selectedProduct) => selectedProduct !== product))
+    showToast(`${product} removed from offer.`, 'error')
   }
 
   function formatPreviewDate(date: Date | null) {
@@ -328,7 +346,23 @@ function CreateOfferView({ onCancel, onSave }: { onCancel: () => void; onSave: (
             <FormField label="End date"><DatePicker calendarClassName="app-date-picker-calendar" className="date-picker-input" selected={endDate} onChange={(date: Date | null) => setEndDate(date)} dateFormat="dd / MM / yyyy" minDate={startDate || undefined} showPopperArrow={false} /></FormField>
           </div>
         </Panel>
-        <PageActions onCancel={onCancel} onSave={onSave} saveLabel="Create Offer" />
+        <PageActions
+          onCancel={onCancel}
+          onSave={() => {
+            if (!offerName.trim()) {
+              showToast('Offer name is required.', 'error')
+              return
+            }
+
+            if (applyTo === 'Specific Products' && selectedProducts.length === 0) {
+              showToast('Select at least one product for this offer.', 'error')
+              return
+            }
+
+            onSave()
+          }}
+          saveLabel="Create Offer"
+        />
       </div>
 
       <aside className="offer-preview-panel">

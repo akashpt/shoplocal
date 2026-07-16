@@ -10,6 +10,7 @@ import {
 } from 'recharts'
 import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
+import { showToast } from '../utils/toast'
 
 type ChartRange = 'W' | 'M' | 'Y'
 
@@ -134,11 +135,13 @@ export function Dashboard() {
         : [0, 75000, 150000, 225000, 300000]
 
   function toggleOffer(title: string) {
+    const isEnabled = enabledOffers.includes(title)
     setEnabledOffers((currentOffers) =>
-      currentOffers.includes(title)
+      isEnabled
         ? currentOffers.filter((offerTitle) => offerTitle !== title)
         : [...currentOffers, title],
     )
+    showToast(isEnabled ? `${title} offer paused.` : `${title} offer activated.`, isEnabled ? 'warning' : 'success')
   }
 
   function exportReport(reportTitle: string) {
@@ -162,6 +165,7 @@ export function Dashboard() {
     link.click()
     URL.revokeObjectURL(url)
     setLastExport(reportTitle)
+    showToast(`${reportTitle} report exported successfully.`, 'success')
   }
 
   return (

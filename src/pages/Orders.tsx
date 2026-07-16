@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { AppIcon } from '../components/ui/AppIcon'
 import { Panel } from '../components/ui/Panel'
+import { showToast } from '../utils/toast'
 
 type OrdersProps = {
   onViewChange: (view: 'list' | 'details') => void
@@ -74,6 +75,10 @@ export function Orders({ onViewChange, searchQuery, view }: OrdersProps) {
   function updateOrderStatus(orderId: string, status: OrderStatus) {
     setOrders((currentOrders) =>
       currentOrders.map((order) => (order.id === orderId ? { ...order, status } : order)),
+    )
+    showToast(
+      `${orderId} changed to ${status}.`,
+      status === 'Cancelled' || status === 'Returned' ? 'error' : status === 'Delivered' ? 'success' : 'warning',
     )
   }
 

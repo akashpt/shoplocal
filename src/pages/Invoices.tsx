@@ -3,6 +3,7 @@ import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
+import { showToast } from '../utils/toast'
 
 type InvoicesProps = {
   onViewChange: (view: 'list' | 'generate' | 'detail') => void
@@ -222,10 +223,12 @@ export function Invoices({ onViewChange, searchQuery, view }: InvoicesProps) {
 
     function handleShare() {
       showFeedback('Invoice share link copied')
+      showToast('Invoice share link copied.', 'success')
     }
 
     function handleDownload() {
       showFeedback('Invoice PDF is ready')
+      showToast('Invoice PDF is ready.', 'success')
     }
 
     window.addEventListener('invoices:save', handleSave)
@@ -262,12 +265,14 @@ export function Invoices({ onViewChange, searchQuery, view }: InvoicesProps) {
     })
     setSelectedInvoiceId(nextInvoice.id)
     onViewChange('detail')
+    showToast('Invoice generated successfully.', 'success')
   }
 
   function deleteInvoice(invoiceId: string) {
     setInvoices((currentInvoices) => currentInvoices.filter((invoice) => invoice.id !== invoiceId))
     setSelectedInvoiceId(invoices.find((invoice) => invoice.id !== invoiceId)?.id || initialInvoices[0].id)
     onViewChange('list')
+    showToast('Invoice deleted.', 'error')
   }
 
   if (view === 'generate') {
@@ -291,9 +296,18 @@ export function Invoices({ onViewChange, searchQuery, view }: InvoicesProps) {
         feedback={feedback}
         onBack={() => onViewChange('list')}
         onDelete={() => deleteInvoice(selectedInvoice.id)}
-        onDownload={() => showFeedback('Invoice PDF is ready')}
-        onPrint={() => window.print()}
-        onShare={() => showFeedback('Invoice share link copied')}
+        onDownload={() => {
+          showFeedback('Invoice PDF is ready')
+          showToast('Invoice PDF is ready.', 'success')
+        }}
+        onPrint={() => {
+          window.print()
+          showToast('Invoice print dialog opened.', 'success')
+        }}
+        onShare={() => {
+          showFeedback('Invoice share link copied')
+          showToast('Invoice share link copied.', 'success')
+        }}
       />
     )
   }

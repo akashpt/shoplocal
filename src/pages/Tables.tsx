@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { DragEvent, MouseEvent } from 'react'
 import { AppIcon } from '../components/ui/AppIcon'
+import { showToast } from '../utils/toast'
 
 type ModalMode = 'add' | 'edit'
 type ModalStep = 1 | 2 | 3
@@ -141,6 +142,12 @@ export function Tables() {
 
   function uploadLayoutImage(file: File | null) {
     if (!file) {
+      showToast('Choose a layout image first.', 'warning')
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Only image files can be uploaded for layout.', 'error')
       return
     }
 
@@ -149,6 +156,7 @@ export function Tables() {
     }
     setLayoutImageUrl(URL.createObjectURL(file))
     setUploadedLayout(true)
+    showToast('Layout image uploaded successfully.', 'success')
   }
 
   function openModal(mode: ModalMode, step: ModalStep = 1) {
@@ -186,6 +194,7 @@ export function Tables() {
     setIsNamePromptOpen(false)
     setSelectedTableId(nextId)
     setBottomMode('detail')
+    showToast(`Table ${nameDraft.trim() || `F${nextNumber}`} added to layout.`, 'success')
   }
 
   function cancelTableNamePrompt() {
@@ -216,10 +225,12 @@ export function Tables() {
     if (selectedTableId === id) {
       setSelectedTableId('')
     }
+    showToast('Table deleted from layout.', 'error')
   }
 
   function setSelectedTableStatus(status: LayoutTable['status']) {
     if (!selectedTableId) {
+      showToast('Select a table before changing status.', 'warning')
       return
     }
 
@@ -234,11 +245,13 @@ export function Tables() {
           : table,
       ),
     )
+    showToast(`Table status changed to ${status === 'busy' ? 'not available' : status}.`, status === 'available' ? 'success' : 'warning')
   }
 
   function createOrderForSelectedTable() {
     const targetId = selectedTableId || tables.find((table) => table.status === 'available')?.id
     if (!targetId) {
+      showToast('Select an available table before creating an order.', 'warning')
       return
     }
 
@@ -250,6 +263,7 @@ export function Tables() {
           : table,
       ),
     )
+    showToast('New table order created successfully.', 'success')
   }
 
   function saveFloorInfo() {
@@ -268,6 +282,7 @@ export function Tables() {
       setActiveFloorId(nextFloor.id)
       setSelectedTableId('')
       setBottomMode('select')
+      showToast(`Floor ${parsedNumber} created successfully.`, 'success')
       return
     }
 
@@ -276,6 +291,7 @@ export function Tables() {
         currentFloors.map((floor) => (floor.id === existingFloor.id ? { ...floor, type: draftFloorType } : floor)),
       )
       setActiveFloorId(existingFloor.id)
+      showToast(`Floor ${parsedNumber} already existed, so its type was updated.`, 'warning')
       return
     }
 
@@ -286,6 +302,7 @@ export function Tables() {
         )
         .sort((first, second) => first.number - second.number),
     )
+    showToast('Floor details saved successfully.', 'success')
   }
 
   return (
