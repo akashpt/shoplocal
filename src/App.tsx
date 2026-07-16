@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { AppShell } from './components/AppShell'
+import { AppIcon } from './components/ui/AppIcon'
 import { Dashboard } from './pages/Dashboard'
 import { Expenses } from './pages/Expenses'
 import { Inventory } from './pages/Inventory'
@@ -42,11 +43,7 @@ function App() {
       {isLoading && (
         <div className="page-loader" role="status" aria-label="Loading ShopLocal">
           <div className="loader-mark">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m12 5 7 3.5-7 3.5-7-3.5L12 5Z" />
-              <path d="m5 12 7 3.5 7-3.5" />
-              <path d="m5 15.5 7 3.5 7-3.5" />
-            </svg>
+            <AppIcon name="layers" />
           </div>
           <strong>ShopLocal</strong>
         </div>

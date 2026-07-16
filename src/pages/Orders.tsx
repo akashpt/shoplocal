@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { AppIcon } from '../components/ui/AppIcon'
 import { Panel } from '../components/ui/Panel'
 
 type OrdersProps = {
@@ -32,11 +33,7 @@ const initialOrders = [
 type Order = (typeof initialOrders)[number]
 
 function ChevronIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m9 6 6 6-6 6" />
-    </svg>
-  )
+  return <AppIcon name="chevron" />
 }
 
 export function Orders({ onViewChange, searchQuery, view }: OrdersProps) {

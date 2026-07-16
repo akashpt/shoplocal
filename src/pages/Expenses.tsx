@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
@@ -299,19 +300,10 @@ export function Expenses({ onViewChange, searchQuery, view }: ExpensesProps) {
               <span>{expense.notes}</span>
               <div className="expense-row-actions">
                 <button type="button" onClick={() => openEditExpense(expense)} aria-label={`Edit ${expense.name}`}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
-                  </svg>
+                  <AppIcon name="pencil" />
                 </button>
                 <button type="button" onClick={() => deleteExpense(expense.id)} aria-label={`Delete ${expense.name}`}>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4h8v2" />
-                    <path d="M19 6 18 20H6L5 6" />
-                    <path d="M10 11v5" />
-                    <path d="M14 11v5" />
-                  </svg>
+                  <AppIcon name="trash" />
                 </button>
               </div>
             </div>
@@ -496,11 +488,7 @@ function ExpenseDropdown({
 }
 
 function ChevronIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m9 6 6 6-6 6" />
-    </svg>
-  )
+  return <AppIcon name="chevron" />
 }
 
 function ExpenseMetricIcon({ icon, tone }: { icon: string; tone: string }) {
@@ -520,37 +508,21 @@ function ExpenseChoiceIcon({ icon, tone }: { icon: string; tone: string }) {
 }
 
 function ExpenseSvg({ icon }: { icon: string }) {
-  if (icon === 'warning') {
-    return <svg viewBox="0 0 24 24"><path d="M12 4 21 20H3z" /><path d="M12 9v5" /><path d="M12 17h.01" /></svg>
+  const iconMap: Record<string, AppIconName> = {
+    warning: 'alert',
+    home: 'home',
+    bolt: 'zap',
+    people: 'users',
+    truck: 'truck',
+    tools: 'wrench',
+    more: 'more',
+    cash: 'cash',
+    phone: 'smartphone',
+    card: 'credit-card',
+    box: 'box',
   }
-  if (icon === 'home') {
-    return <svg viewBox="0 0 24 24"><path d="m4 11 8-7 8 7" /><path d="M6 10v10h12V10" /><path d="M10 20v-6h4v6" /></svg>
-  }
-  if (icon === 'bolt') {
-    return <svg viewBox="0 0 24 24"><path d="m13 2-8 12h7l-1 8 8-12h-7z" /></svg>
-  }
-  if (icon === 'people') {
-    return <svg viewBox="0 0 24 24"><path d="M16 20v-2a4 4 0 0 0-8 0v2" /><circle cx="12" cy="8" r="3" /><path d="M22 20v-2a4 4 0 0 0-3-3.87" /><path d="M16 5.13a3 3 0 0 1 0 5.74" /></svg>
-  }
-  if (icon === 'truck') {
-    return <svg viewBox="0 0 24 24"><path d="M3 7h11v9H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg>
-  }
-  if (icon === 'tools') {
-    return <svg viewBox="0 0 24 24"><path d="M14 7 7 14" /><path d="m6 15 3 3" /><path d="M14 7l3-3 3 3-3 3z" /><path d="M4 20 9 15" /><path d="m14 14 6 6" /></svg>
-  }
-  if (icon === 'more') {
-    return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8 12h.01" /><path d="M12 12h.01" /><path d="M16 12h.01" /></svg>
-  }
-  if (icon === 'cash') {
-    return <svg viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="10" rx="2" /><circle cx="17" cy="15" r="4" /><path d="M17 13v4" /><path d="M15 15h4" /></svg>
-  }
-  if (icon === 'phone') {
-    return <svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2" /><path d="M11 17h2" /></svg>
-  }
-  if (icon === 'card') {
-    return <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M3 10h18" /><path d="M7 15h4" /></svg>
-  }
-  return <svg viewBox="0 0 24 24"><path d="m12 3 8 4-8 4-8-4z" /><path d="M4 11l8 4 8-4" /><path d="M4 15l8 4 8-4" /></svg>
+
+  return <AppIcon name={iconMap[icon] || 'box'} />
 }
 
 function PreviewRow({ label, value }: { label: string; value: string }) {

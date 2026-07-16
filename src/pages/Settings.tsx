@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { Panel } from '../components/ui/Panel'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 
@@ -279,5 +280,12 @@ function SaveButton({ className = 'action-button primary', label }: { className?
 }
 
 function SettingsIcon({ icon }: { icon: string }) {
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon === 'store' ? 'M4 10h16l-2-5H6z M6 10v9h12v-9 M9 19v-5h6v5' : icon === 'sliders' ? 'M6 4v16 M12 4v16 M18 4v16 M4 8h4 M10 14h4 M16 10h4' : icon === 'user' ? 'M20 21a8 8 0 0 0-16 0 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8' : icon === 'chevron' ? 'm9 6 6 6-6 6' : 'M4 12h16'} /></svg>
+  const iconMap: Record<string, AppIconName> = {
+    store: 'store',
+    sliders: 'sliders',
+    user: 'user',
+    chevron: 'chevron',
+  }
+
+  return <AppIcon name={iconMap[icon] || 'settings'} />
 }

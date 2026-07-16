@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { AppIcon } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
@@ -109,48 +110,25 @@ function ProductThumb() {
 function Stars({ rating }: { rating: number }) {
   return (
     <span className="rating-stars" aria-label={`${rating} stars`}>
-      {'★'.repeat(5)} <b>{rating}</b>
+      {'\u2605'.repeat(5)} <b>{rating}</b>
     </span>
   )
 }
 
 function TrashIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 7h16" />
-      <path d="M10 11v6M14 11v6" />
-      <path d="M6 7l1 14h10l1-14" />
-      <path d="M9 7V4h6v3" />
-    </svg>
-  )
+  return <AppIcon name="trash" />
 }
 
 function ChevronIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m9 6 6 6-6 6" />
-    </svg>
-  )
+  return <AppIcon name="chevron" />
 }
 
 function ImageIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="4" y="5" width="16" height="14" rx="2" />
-      <circle cx="9" cy="10" r="1.4" />
-      <path d="m5 17 5-5 4 4 2-2 3 3" />
-    </svg>
-  )
+  return <AppIcon name="image" />
 }
 
 function UploadIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 16V5" />
-      <path d="m8 9 4-4 4 4" />
-      <path d="M5 16v3h14v-3" />
-    </svg>
-  )
+  return <AppIcon name="upload" />
 }
 
 function DummyProductImage({ compact = false, name }: { compact?: boolean; name: string }) {
@@ -386,10 +364,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
   return (
     <section className="inventory-page">
       <label className="inventory-page-search">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m16.5 16.5 4 4" />
-        </svg>
+        <AppIcon name="search" />
         <input
           type="search"
           placeholder="Search products by name or ID..."
@@ -936,7 +911,7 @@ function ProductProfileView({ onDelete, product }: ProductProfileViewProps) {
 
         <Panel className="profile-section review-panel">
           <h2>Ratings and Review</h2>
-          <div className="rating-summary"><strong>4.8</strong><span>★★★★★</span><small>Based on 142 Reviews</small></div>
+          <div className="rating-summary"><strong>4.8</strong><span>{'\u2605'.repeat(5)}</span><small>Based on 142 Reviews</small></div>
           <div className="review-row"><b>Priya S</b><span>2 Days ago</span><p>Fresh and Good Quality</p></div>
           <div className="review-row"><b>Meera P</b><span>3 Days ago</span><p>Highly Recommend for soft rotis</p></div>
           <button className="text-link small" type="button">See all</button>

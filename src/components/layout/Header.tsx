@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { AppIcon } from '../ui/AppIcon'
 import type { PageId } from '../../types'
 
 type HeaderProps = {
@@ -171,10 +172,7 @@ export function Header({
       <div className="topbar-right">
         {isInventoryPage && inventoryView === 'list' && (
           <label className="header-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input
               type="search"
               placeholder="Search products by name or ID..."
@@ -185,10 +183,7 @@ export function Header({
         )}
         {isOrdersPage && ordersView === 'list' && (
           <label className="header-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input
               type="search"
               placeholder="Search Orders by Customer or ID..."
@@ -199,10 +194,7 @@ export function Header({
         )}
         {isOffersPage && offersView === 'list' && (
           <label className="header-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input
               type="search"
               placeholder="Search offers by name or code..."
@@ -213,10 +205,7 @@ export function Header({
         )}
         {isExpensesPage && expensesView === 'list' && (
           <label className="header-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input
               type="search"
               placeholder="Search expenses..."
@@ -227,10 +216,7 @@ export function Header({
         )}
         {isInvoicesPage && invoicesView === 'list' && (
           <label className="header-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input
               type="search"
               placeholder="Search by Invoice number or customer..."
@@ -347,10 +333,7 @@ export function Header({
             aria-label="Notifications"
             onClick={() => toggleMenu('notifications')}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
-              <path d="M10 19a2 2 0 0 0 4 0" />
-            </svg>
+            <AppIcon name="bell" />
           </button>
           {openMenu === 'notifications' && (
             <div className="dropdown-panel notification-dropdown">

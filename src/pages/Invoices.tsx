@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
@@ -424,10 +425,7 @@ function GenerateInvoiceView({
         <Panel className="select-order-panel">
           <h2>Select order</h2>
           <label className="invoice-order-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m16.5 16.5 4 4" />
-            </svg>
+            <AppIcon name="search" />
             <input value={orderSearch} onChange={(event) => setOrderSearch(event.target.value)} placeholder="Search by Order ID or Customer Name..." />
           </label>
           <div className="invoice-order-list">
@@ -644,7 +642,7 @@ function InvoiceDropdown({
     <div className={isOpen ? 'filter-control invoice-filter-control open' : 'filter-control invoice-filter-control'}>
       <button className="filter-trigger" type="button" aria-expanded={isOpen} onClick={() => onOpenChange(isOpen ? null : id)}>
         <strong>{value}</strong>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+        <AppIcon name="chevron" />
       </button>
       {isOpen && (
         <div className="filter-menu" role="listbox" aria-label={value}>
@@ -671,13 +669,17 @@ function IconButton({ icon, label, onClick }: { icon: string; label: string; onC
 }
 
 function ActionSvg({ icon }: { icon: string }) {
-  if (icon === 'eye') return <svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
-  if (icon === 'download') return <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M5 21h14" /></svg>
-  if (icon === 'share') return <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.5 10.5 7-4" /><path d="m8.5 13.5 7 4" /></svg>
-  if (icon === 'print') return <svg viewBox="0 0 24 24"><path d="M7 8V3h10v5" /><path d="M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" /><path d="M7 14h10v7H7z" /></svg>
-  if (icon === 'trash') return <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6 18 20H6L5 6" /><path d="M10 11v5" /><path d="M14 11v5" /></svg>
-  if (icon === 'calendar') return <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M10 15h4" /></svg>
-  if (icon === 'check') return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></svg>
-  if (icon === 'clock') return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v6l4 2" /></svg>
-  return <svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5" /><path d="M10 13h4" /><path d="M10 17h6" /></svg>
+  const iconMap: Record<string, AppIconName> = {
+    eye: 'eye',
+    download: 'download',
+    share: 'share',
+    print: 'printer',
+    trash: 'trash',
+    calendar: 'calendar',
+    check: 'check-circle',
+    clock: 'clock',
+    invoice: 'invoice',
+  }
+
+  return <AppIcon name={iconMap[icon] || 'invoice'} />
 }

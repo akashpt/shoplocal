@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AppIcon } from '../components/ui/AppIcon'
 
 type ShopStatus = 'Open' | 'Closed'
 
@@ -185,21 +186,21 @@ function ShopModal({ shop, onClose, onSave }: { shop: Shop | null; onClose: () =
 }
 
 function ShopIcon({ tone }: { tone: 'blue' | 'violet' | 'rose' }) {
-  return <span className={`shop-icon ${tone}`}><svg viewBox="0 0 24 24"><path d="M4 10h16l-2-5H6z" /><path d="M6 10v9h12v-9" /><path d="M9 19v-5h6v5" /></svg></span>
+  return <span className={`shop-icon ${tone}`}><AppIcon name="store" /></span>
 }
 
 function CheckIcon() {
-  return <svg viewBox="0 0 24 24"><path d="m7 12 3 3 7-7" /></svg>
+  return <AppIcon name="check" />
 }
 
 function SwitchIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="M21 3 13 11" /><path d="M8 21H3v-5" /><path d="m3 21 8-8" /></svg>
+  return <AppIcon name="refresh" />
 }
 
 function GearIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /><path d="M19.4 15a8 8 0 0 0 .1-2l2-1.5-2-3.5-2.4 1a8 8 0 0 0-1.7-1L15 5h-4l-.4 3a8 8 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a8 8 0 0 0 .1 2l-2 1.5 2 3.5 2.4-1a8 8 0 0 0 1.7 1l.4 3h4l.4-3a8 8 0 0 0 1.7-1l2.4 1 2-3.5Z" /></svg>
+  return <AppIcon name="settings" />
 }
 
 function InfoIcon() {
-  return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v5" /><path d="M12 8h.01" /></svg>
+  return <AppIcon name="file-question" />
 }

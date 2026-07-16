@@ -1,3 +1,4 @@
+import { AppIcon } from '../ui/AppIcon'
 import type { PageId } from '../../types'
 
 type SidebarProps = {
@@ -28,11 +29,7 @@ export function Sidebar({ activePage, onNavigate }: SidebarProps) {
     <aside className="sidebar">
       <div className="brand">
         <span className="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="m12 5 7 3.5-7 3.5-7-3.5L12 5Z" />
-            <path d="m5 12 7 3.5 7-3.5" />
-            <path d="m5 15.5 7 3.5 7-3.5" />
-          </svg>
+          <AppIcon name="layers" />
         </span>
         <div>
           <strong>ShopLocal</strong>

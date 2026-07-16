@@ -31,6 +31,61 @@ button:not(:disabled):active {
   transform: translateY(0);
 }
 
+:root {
+  --app-primary: #3B6EF8;
+  --app-danger: #ef4444;
+  --app-danger-soft: #fff1f2;
+  --app-danger-border: #fecdd3;
+  --app-star: #f59e0b;
+}
+
+.delete-product,
+.image-delete,
+.delete-profile-button,
+.expense-row-actions button:last-child,
+.invoice-quick-action.danger,
+.action-button.danger,
+.delete-drop,
+.ghost-action.danger {
+  color: var(--app-danger);
+}
+
+.delete-product,
+.image-delete,
+.expense-row-actions button:last-child {
+  background: #ffffff;
+  border-color: var(--app-danger-border);
+}
+
+.delete-product:hover,
+.image-delete:hover,
+.delete-profile-button:hover,
+.expense-row-actions button:last-child:hover,
+.invoice-quick-action.danger:hover,
+.action-button.danger:hover,
+.ghost-action.danger:hover {
+  background: var(--app-danger-soft);
+  border-color: var(--app-danger);
+  color: var(--app-danger);
+  box-shadow: 0 10px 24px rgba(239, 68, 68, 0.14);
+}
+
+.delete-product svg,
+.image-delete svg,
+.delete-profile-button svg,
+.expense-row-actions button:last-child svg,
+.invoice-quick-action.danger svg,
+.delete-drop svg,
+.ghost-action.danger svg {
+  color: currentColor;
+  stroke: currentColor;
+}
+
+.rating-stars,
+.rating-summary span {
+  color: var(--app-star);
+}
+
 .page-loader {
   align-items: center;
   animation: loaderFade 0.25s ease 0.55s forwards;
@@ -364,7 +419,7 @@ button:not(:disabled):active {
   display: flex;
   gap: 10px;
   height: 40px;
-  min-width: min(430px, 30vw);
+  min-width: min(430px, 23vw);
   padding: 0 13px;
 }
 
@@ -1396,7 +1451,7 @@ button:not(:disabled):active {
 }
 
 .rating-stars {
-  color: #ff9d00;
+  color: var(--app-star);
   font-size: 14px;
   letter-spacing: 0;
   white-space: nowrap;
@@ -1408,7 +1463,8 @@ button:not(:disabled):active {
 }
 
 .delete-product {
-  color: #e1004d;
+  border-color: var(--app-danger-border);
+  color: var(--app-danger);
   height: 32px;
   width: 32px;
 }
@@ -2126,9 +2182,9 @@ button:not(:disabled):active {
 .image-delete {
   align-items: center;
   background: #ffffff;
-  border: 1px solid #f0b8ca;
+  border: 1px solid var(--app-danger-border);
   border-radius: 7px;
-  color: #e1004d;
+  color: var(--app-danger);
   cursor: pointer;
   display: inline-flex;
   height: 32px;
@@ -2293,9 +2349,9 @@ button:not(:disabled):active {
 .delete-profile-button {
   align-items: center;
   background: #ffffff;
-  border: 1px solid #d9d9dc;
+  border: 1px solid var(--app-danger-border);
   border-radius: 8px;
-  color: #111111;
+  color: var(--app-danger);
   cursor: pointer;
   display: inline-flex;
   gap: 12px;
@@ -2306,7 +2362,7 @@ button:not(:disabled):active {
 }
 
 .delete-profile-button svg {
-  color: #e1004d;
+  color: currentColor;
   height: 18px;
   width: 18px;
 }
@@ -2403,7 +2459,7 @@ button:not(:disabled):active {
 }
 
 .rating-summary span {
-  color: #ff9d00;
+  color: var(--app-star);
   font-size: 22px;
 }
 
@@ -3393,12 +3449,14 @@ button:not(:disabled):active {
 }
 
 .expense-row-actions button:last-child {
-  color: #e1004d;
+  border-color: var(--app-danger-border);
+  color: var(--app-danger);
 }
 
 .expense-row-actions button:last-child:hover {
-  border-color: #f0b8ca;
-  color: #e1004d;
+  background: var(--app-danger-soft);
+  border-color: var(--app-danger);
+  color: var(--app-danger);
 }
 
 .expense-row-actions svg {
@@ -3783,9 +3841,9 @@ button:not(:disabled):active {
 }
 
 .action-button.danger {
-  background: #f8d4e0;
-  border-color: #f0b8ca;
-  color: #e1004d;
+  background: var(--app-danger-soft);
+  border-color: var(--app-danger-border);
+  color: var(--app-danger);
   font-weight: 800;
 }
 
@@ -3845,7 +3903,7 @@ button:not(:disabled):active {
 .team-row button {
   background: transparent;
   border: 0;
-  color: #e1004d;
+  color: var(--app-danger);
   cursor: pointer;
   font: inherit;
 }
@@ -4855,7 +4913,8 @@ button:not(:disabled):active {
 }
 
 .invoice-quick-action.danger {
-  color: #e40052;
+  border-color: var(--app-danger-border);
+  color: var(--app-danger);
 }
 
 .preview-row.strong strong {
@@ -5803,11 +5862,11 @@ button:not(:disabled):active {
 
 .delete-drop {
   align-items: center;
-  background: #fff1f2;
-  border: 1px solid #fca5a5;
+  background: var(--app-danger-soft);
+  border: 1px solid var(--app-danger-border);
   border-radius: 12px;
   bottom: 10px;
-  color: #dc2626;
+  color: var(--app-danger);
   display: grid;
   font-weight: 700;
   gap: 8px;
@@ -6019,6 +6078,11 @@ button:not(:disabled):active {
   justify-content: center;
   min-height: 44px;
   padding: 0 28px;
+}
+
+.ghost-action.danger {
+  border-color: var(--app-danger-border);
+  color: var(--app-danger);
 }
 
 .two-column,

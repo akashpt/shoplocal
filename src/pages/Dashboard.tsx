@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 
 type ChartRange = 'W' | 'M' | 'Y'
@@ -107,66 +108,7 @@ const exportReports = [
 type IconName = 'receipt' | 'cart' | 'cash' | 'alert' | 'invoice' | 'download' | 'chevron'
 
 function DashboardIcon({ name }: { name: IconName }) {
-  if (name === 'cart') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L21 8H7" />
-        <circle cx="10" cy="20" r="1.3" />
-        <circle cx="17" cy="20" r="1.3" />
-      </svg>
-    )
-  }
-
-  if (name === 'cash') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect x="3" y="6" width="18" height="12" rx="2" />
-        <circle cx="12" cy="12" r="3" />
-        <path d="M7 9h.01M17 15h.01" />
-      </svg>
-    )
-  }
-
-  if (name === 'alert') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m12 4 9 16H3L12 4Z" />
-        <path d="M12 9v4M12 17h.01" />
-      </svg>
-    )
-  }
-
-  if (name === 'invoice') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M7 3h8l3 3v15l-2-1-2 1-2-1-2 1-2-1-2 1V3Z" />
-        <path d="M14 3v4h4M9 11h6M9 15h6" />
-      </svg>
-    )
-  }
-
-  if (name === 'download') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 4v10M8 10l4 4 4-4M5 19h14" />
-      </svg>
-    )
-  }
-
-  if (name === 'chevron') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m9 6 6 6-6 6" />
-      </svg>
-    )
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="6" y="4" width="12" height="16" rx="2" />
-      <path d="M9 8h6M9 12h6M9 16h3" />
-    </svg>
-  )
+  return <AppIcon name={name as AppIconName} />
 }
 
 export function Dashboard() {

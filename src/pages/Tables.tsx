@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { DragEvent, MouseEvent } from 'react'
+import { AppIcon } from '../components/ui/AppIcon'
 
 type ModalMode = 'add' | 'edit'
 type ModalStep = 1 | 2 | 3
@@ -908,33 +909,33 @@ function TableShape({ ghost = false, kind }: { ghost?: boolean; kind: TableKind 
 }
 
 function StepCheckIcon() {
-  return <span className="success-check"><svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-8" /></svg></span>
+  return <span className="success-check"><AppIcon name="check" /></span>
 }
 
 function TableIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z" /><path d="M8 20h8" /><path d="M12 16v4" /></svg>
+  return <AppIcon name="monitor" />
 }
 
 function GearIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" /><path d="M4 12h2M18 12h2M12 4v2M12 18v2" /></svg>
+  return <AppIcon name="settings" />
 }
 
 function PencilIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2 2 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
+  return <AppIcon name="pencil" />
 }
 
 function ChevronRight() {
-  return <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></svg>
+  return <AppIcon name="chevron" />
 }
 
 function ImageIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M4 5h13a2 2 0 0 1 2 2v4" /><path d="M4 5v14h10" /><path d="m4 16 4-4 3 3 2-2 3 3" /><path d="M18 15v6" /><path d="M15 18h6" /></svg>
+  return <AppIcon name="image" />
 }
 
 function TrashIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6 18 20H6L5 6" /></svg>
+  return <AppIcon name="trash" />
 }
 
 function MoveIcon() {
-  return <svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="m8 6 4-4 4 4" /><path d="m8 18 4 4 4-4" /><path d="M2 12h20" /><path d="m6 8-4 4 4 4" /><path d="m18 8 4 4-4 4" /></svg>
+  return <AppIcon name="move" />
 }

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
@@ -47,45 +48,16 @@ const chartData = [
 ]
 
 function OfferIcon({ icon, tone }: { icon: 'document' | 'cart' | 'money' | 'warning'; tone: 'blue' | 'violet' | 'green' | 'amber' }) {
-  const icons = {
-    document: (
-      <>
-        <path d="M7 4h7l3 3v13H7z" />
-        <path d="M14 4v4h4" />
-        <path d="M10 12h5" />
-        <path d="M10 16h4" />
-      </>
-    ),
-    cart: (
-      <>
-        <path d="M6 7h2l1.3 7h7.4l1.1-5H9" />
-        <path d="M10 18h.01" />
-        <path d="M16 18h.01" />
-      </>
-    ),
-    money: (
-      <>
-        <rect x="4" y="6" width="16" height="12" rx="2" />
-        <path d="M8 10h.01" />
-        <path d="M16 14h.01" />
-        <path d="M12 9v6" />
-        <path d="M10.5 10.5c.4-.4.9-.6 1.5-.6 1 0 1.8.5 1.8 1.2 0 1.7-3.6.8-3.6 2.6 0 .8.8 1.3 1.9 1.3.7 0 1.3-.2 1.7-.7" />
-      </>
-    ),
-    warning: (
-      <>
-        <path d="M12 4 21 20H3z" />
-        <path d="M12 9v5" />
-        <path d="M12 17h.01" />
-      </>
-    ),
+  const icons: Record<typeof icon, AppIconName> = {
+    document: 'invoice',
+    cart: 'cart',
+    money: 'cash',
+    warning: 'alert',
   }
 
   return (
     <span className={`offer-metric-icon ${tone}`}>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        {icons[icon]}
-      </svg>
+      <AppIcon name={icons[icon]} />
     </span>
   )
 }
