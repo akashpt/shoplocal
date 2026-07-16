@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import { Panel } from '../components/ui/Panel'
+import { Toast } from '../components/ui/Toast'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 
 type SettingsTab = 'store' | 'preferences' | 'account'
@@ -36,7 +37,7 @@ export function Settings() {
         <SettingsTabButton activeTab={activeTab} id="account" icon="user" title="Account" subtitle="Security · Export · Help · Legal" onChange={setActiveTab} />
       </aside>
       <div className="settings-content">
-        {savedAt && <div className="settings-save-toast">{savedAt}</div>}
+        {savedAt && <div className="settings-save-toast"><Toast message={savedAt} tone="success" /></div>}
         {activeTab === 'store' && <StoreSettings />}
         {activeTab === 'preferences' && <PreferencesSettings />}
         {activeTab === 'account' && <AccountSettings />}

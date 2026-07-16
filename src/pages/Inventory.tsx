@@ -5,6 +5,7 @@ import { AppIcon } from '../components/ui/AppIcon'
 import { FormField } from '../components/ui/FormField'
 import { PageActions } from '../components/ui/PageActions'
 import { Panel } from '../components/ui/Panel'
+import { Toast, type ToastTone } from '../components/ui/Toast'
 import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 import heroImage from '../assets/hero.png'
 
@@ -215,7 +216,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null)
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [inventoryNotice, setInventoryNotice] = useState<string | null>(null)
+  const [inventoryNotice, setInventoryNotice] = useState<{ message: string; tone: ToastTone } | null>(null)
   const categories = useMemo(
     () => ['All Categories', ...Array.from(new Set(products.map((product) => product.category)))],
     [products],
@@ -273,26 +274,30 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
     setSelectedProductIds([])
   }
 
+  function showInventoryNotice(message: string, tone: ToastTone = 'info') {
+    setInventoryNotice({ message, tone })
+  }
+
   function applyAlertPanel(panelTitle: string) {
     if (panelTitle === 'Low Stock Items') {
       updateFilter(() => setStockFilter('Low Stock'))
-      setInventoryNotice('Showing low stock products from your product list.')
+      showInventoryNotice('Showing low stock products from your product list.', 'warning')
       return
     }
 
     if (panelTitle === 'Out of Stock Items') {
       updateFilter(() => setStockFilter('Out of Stock'))
-      setInventoryNotice('Showing products with zero stock.')
+      showInventoryNotice('Showing products with zero stock.', 'error')
       return
     }
 
     if (panelTitle === 'High Demand Items') {
       updateFilter(() => setSortMode('Stock High -Low'))
-      setInventoryNotice('Sorted products by highest stock movement signal.')
+      showInventoryNotice('Sorted products by highest stock movement signal.', 'info')
       return
     }
 
-    setInventoryNotice('Expiry tracking is selected. Add expiry dates to products to filter this list.')
+    showInventoryNotice('Expiry tracking is selected. Add expiry dates to products to filter this list.', 'warning')
   }
 
   function updateStock(productId: string, change: number) {
@@ -310,14 +315,14 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
 
   function handleAddProduct(product: Product) {
     setProducts((currentProducts) => [product, ...currentProducts])
-    setInventoryNotice(`${product.name} was added to inventory.`)
+    showInventoryNotice(`${product.name} was added to inventory.`, 'success')
     onViewChange('list')
   }
 
   function handleDeleteProfileProduct(productId: string) {
     deleteProduct(productId)
     onViewChange('list')
-    setInventoryNotice('Product deleted from inventory.')
+    showInventoryNotice('Product deleted from inventory.', 'error')
   }
 
   function toggleProductSelection(productId: string) {
@@ -403,7 +408,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
           onOpenChange={setOpenDropdown}
         />
       </div>
-      {inventoryNotice && <div className="inventory-notice">{inventoryNotice}</div>}
+      {inventoryNotice && <Toast message={inventoryNotice.message} tone={inventoryNotice.tone} />}
 
       <div className="inventory-grid">
         <article className="panel inventory-list-panel">
@@ -488,6 +493,7 @@ export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
                     onClick={(event) => {
                       event.stopPropagation()
                       deleteProduct(product.id)
+                      showInventoryNotice('Product deleted from inventory.', 'error')
                     }}
                   >
                     <TrashIcon />

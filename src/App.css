@@ -37,6 +37,18 @@ button:not(:disabled):active {
   --app-danger-soft: #fff1f2;
   --app-danger-border: #fecdd3;
   --app-star: #f59e0b;
+  --toast-success: #059669;
+  --toast-success-bg: #ecfdf5;
+  --toast-success-border: #a7f3d0;
+  --toast-warning: #d97706;
+  --toast-warning-bg: #fffbeb;
+  --toast-warning-border: #fde68a;
+  --toast-error: #dc2626;
+  --toast-error-bg: #fef2f2;
+  --toast-error-border: #fecaca;
+  --toast-info: #2563eb;
+  --toast-info-bg: #eff6ff;
+  --toast-info-border: #bfdbfe;
 }
 
 .delete-product,
@@ -84,6 +96,70 @@ button:not(:disabled):active {
 .rating-stars,
 .rating-summary span {
   color: var(--app-star);
+}
+
+.app-toast,
+.inventory-notice {
+  align-items: center;
+  animation: toastIn 0.22s ease;
+  background: var(--toast-info-bg);
+  border: 1px solid var(--toast-info-border);
+  border-left: 4px solid var(--toast-info);
+  border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
+  color: var(--toast-info);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 10px;
+  line-height: 1.35;
+  min-height: 44px;
+  padding: 10px 14px 10px 12px;
+}
+
+.app-toast.success {
+  background: var(--toast-success-bg);
+  border-color: var(--toast-success-border);
+  border-left-color: var(--toast-success);
+  color: var(--toast-success);
+}
+
+.app-toast.warning {
+  background: var(--toast-warning-bg);
+  border-color: var(--toast-warning-border);
+  border-left-color: var(--toast-warning);
+  color: var(--toast-warning);
+}
+
+.app-toast.error {
+  background: var(--toast-error-bg);
+  border-color: var(--toast-error-border);
+  border-left-color: var(--toast-error);
+  color: var(--toast-error);
+}
+
+.app-toast.info,
+.inventory-notice {
+  background: var(--toast-info-bg);
+  border-color: var(--toast-info-border);
+  border-left-color: var(--toast-info);
+  color: var(--toast-info);
+}
+
+.app-toast-icon {
+  align-items: center;
+  background: #ffffff;
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.app-toast svg {
+  height: 15px;
+  width: 15px;
 }
 
 .page-loader {
@@ -1266,13 +1342,7 @@ button:not(:disabled):active {
 }
 
 .inventory-notice {
-  background: #eef3ff;
-  border: 1px solid #d7e1ff;
-  border-radius: 8px;
-  color: #3B6EF8;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 14px;
+  width: fit-content;
 }
 
 .inventory-list-panel {
@@ -3668,13 +3738,7 @@ button:not(:disabled):active {
 }
 
 .settings-save-toast {
-  background: #d8f8df;
-  border: 1px solid #a9edba;
-  border-radius: 8px;
-  color: #00a72a;
-  font-weight: 800;
   justify-self: end;
-  padding: 10px 14px;
   position: sticky;
   top: 12px;
   z-index: 15;
@@ -7323,6 +7387,18 @@ button:not(:disabled):active {
   }
 }
 
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes loaderPulse {
   0%,
   100% {
@@ -7340,4 +7416,3 @@ button:not(:disabled):active {
     visibility: hidden;
   }
 }
-
