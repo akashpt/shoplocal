@@ -13,7 +13,7 @@ import { Orders } from './pages/Orders'
 import { Settings } from './pages/Settings'
 import { Tables } from './pages/Tables'
 import type { PageId } from './types'
-import { showToast } from './utils/toast'
+import { clearToast, showToast } from './utils/toast'
 
 type InventoryView = 'list' | 'add' | 'profile'
 type OrdersView = 'list' | 'details'
@@ -55,9 +55,16 @@ function App() {
       timer = window.setTimeout(() => setGlobalToast(null), 2200)
     }
 
+    function handleClearToast() {
+      setGlobalToast(null)
+      window.clearTimeout(timer)
+    }
+
     window.addEventListener('app:toast', handleToast)
+    window.addEventListener('app:clear-toast', handleClearToast)
     return () => {
       window.removeEventListener('app:toast', handleToast)
+      window.removeEventListener('app:clear-toast', handleClearToast)
       window.clearTimeout(timer)
     }
   }, [])
@@ -149,6 +156,7 @@ function App() {
         onInvoicesDownload={() => window.dispatchEvent(new Event('invoices:download'))}
         onInvoicesSearchChange={setInvoicesSearch}
         onNavigate={(page) => {
+          clearToast()
           setActivePage(page)
           if (page !== 'inventory') {
             setInventoryView('list')
