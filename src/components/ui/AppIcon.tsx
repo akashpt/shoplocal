@@ -19,6 +19,7 @@ import {
   ImagePlus,
   IndianRupee,
   Layers,
+  LayoutDashboard,
   Lock,
   Monitor,
   MoreHorizontal,
@@ -32,10 +33,13 @@ import {
   Search,
   Settings,
   Share2,
+  SquareLibrary,
   ShoppingCart,
   SlidersHorizontal,
   Smartphone,
   Store,
+  Table2,
+  Tag,
   Trash2,
   Truck,
   Upload,
@@ -59,6 +63,7 @@ export type AppIconName =
   | 'chevron'
   | 'clock'
   | 'credit-card'
+  | 'dashboard'
   | 'download'
   | 'eye'
   | 'file-question'
@@ -82,9 +87,12 @@ export type AppIconName =
   | 'search'
   | 'settings'
   | 'share'
+  | 'shops'
   | 'sliders'
   | 'smartphone'
   | 'store'
+  | 'table'
+  | 'tag'
   | 'trash'
   | 'truck'
   | 'upload'
@@ -106,6 +114,7 @@ const icons: Record<AppIconName, LucideIcon> = {
   chevron: ChevronRight,
   clock: Clock,
   'credit-card': CreditCard,
+  dashboard: LayoutDashboard,
   download: Download,
   eye: Eye,
   'file-question': FileQuestion,
@@ -129,9 +138,12 @@ const icons: Record<AppIconName, LucideIcon> = {
   search: Search,
   settings: Settings,
   share: Share2,
+  shops: SquareLibrary,
   sliders: SlidersHorizontal,
   smartphone: Smartphone,
   store: Store,
+  table: Table2,
+  tag: Tag,
   trash: Trash2,
   truck: Truck,
   upload: Upload,
