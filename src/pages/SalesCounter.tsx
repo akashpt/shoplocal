@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AppIcon, type AppIconName } from '../components/ui/AppIcon'
 import type { PageId } from '../types'
 import type { Product as InventoryProduct } from './Inventory'
@@ -124,6 +124,7 @@ export function SalesCounter({ mode, inventoryProducts, onExit, onNavigate }: Sa
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [currentDateTime, setCurrentDateTime] = useState(() => new Date())
   const [products, setProducts] = useState(() => initialProducts(inventoryProducts))
+  const profileMenuRef = useRef<HTMLDivElement | null>(null)
   const orderItems = products.filter((item) => item.count > 0)
   const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.count, 0)
   const discount = isCouponApplied ? Math.round(subtotal * 0.2) : 0
@@ -142,6 +143,27 @@ export function SalesCounter({ mode, inventoryProducts, onExit, onNavigate }: Sa
   useEffect(() => {
     const timer = window.setInterval(() => setCurrentDateTime(new Date()), 30000)
     return () => window.clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!profileMenuRef.current?.contains(event.target as Node)) {
+        setIsProfileOpen(false)
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsProfileOpen(false)
+      }
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
 
   function resetBill() {
@@ -178,7 +200,7 @@ export function SalesCounter({ mode, inventoryProducts, onExit, onNavigate }: Sa
           <div className="counter-meta">
             <time dateTime={currentDateTime.toISOString()}>{formatCounterDate(currentDateTime)}</time>
             <time dateTime={currentDateTime.toISOString()}>{formatCounterTime(currentDateTime)}</time>
-            <div className="header-menu counter-profile-menu">
+            <div className="header-menu counter-profile-menu" ref={profileMenuRef}>
               <button
                 className={isProfileOpen ? 'user-avatar active' : 'user-avatar'}
                 type="button"
