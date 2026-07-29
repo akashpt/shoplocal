@@ -67,7 +67,7 @@ export function ManageShops() {
       <div className="active-shop-banner">
         <ShopIcon tone="blue" />
         <div>
-          <span>Currently active</span>
+          <span>Today's leading seller</span>
           <strong>{activeShop.name}</strong>
           <small>{activeShop.address}</small>
         </div>

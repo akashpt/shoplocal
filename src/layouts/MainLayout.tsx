@@ -39,6 +39,7 @@ type MainLayoutProps = {
   onInvoicesShare: () => void
   onInvoicesDownload: () => void
   onInvoicesSearchChange: (value: string) => void
+  onOpenCounter: (mode: 'dine' | 'takeaway') => void
   onNavigate: (page: PageId) => void
 }
 
@@ -77,6 +78,7 @@ export function MainLayout({
   onInvoicesShare,
   onInvoicesDownload,
   onInvoicesSearchChange,
+  onOpenCounter,
   onNavigate,
 }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -94,7 +96,7 @@ export function MainLayout({
         aria-label="Close navigation"
         onClick={() => setIsSidebarOpen(false)}
       />
-      <Sidebar activePage={activePage} onNavigate={handleNavigate} />
+      <Sidebar activePage={activePage} onNavigate={handleNavigate} onOpenCounter={onOpenCounter} />
       <main className="content-area">
         <Header
           activePage={activePage}

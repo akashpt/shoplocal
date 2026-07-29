@@ -5,6 +5,7 @@ import type { PageId } from '../../types'
 type SidebarProps = {
   activePage: PageId
   onNavigate: (page: PageId) => void
+  onOpenCounter: (mode: 'dine' | 'takeaway') => void
 }
 
 type SidebarNavItem = {
@@ -31,7 +32,7 @@ const accountNavItems: SidebarNavItem[] = [
   { id: 'settings', icon: 'settings', label: 'Settings' },
 ]
 
-export function Sidebar({ activePage, onNavigate }: SidebarProps) {
+export function Sidebar({ activePage, onNavigate, onOpenCounter }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -73,10 +74,10 @@ export function Sidebar({ activePage, onNavigate }: SidebarProps) {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="open-pos-button" type="button">
+        <button className="open-pos-button" type="button" onClick={() => onOpenCounter('dine')}>
           Open Dine in Counter
         </button>
-        <button className="open-pos-button" type="button">
+        <button className="open-pos-button" type="button" onClick={() => onOpenCounter('takeaway')}>
           Open Takeaway Counter
         </button>
       </div>

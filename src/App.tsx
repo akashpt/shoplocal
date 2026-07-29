@@ -5,13 +5,14 @@ import { AppIcon } from './components/ui/AppIcon'
 import { Toast, type ToastTone } from './components/ui/Toast'
 import { Dashboard } from './pages/Dashboard'
 import { Expenses } from './pages/Expenses'
-import { Inventory } from './pages/Inventory'
+import { Inventory, initialProducts } from './pages/Inventory'
 import { Invoices } from './pages/Invoices'
 import { ManageShops } from './pages/ManageShops'
 import { Offers } from './pages/Offers'
 import { Orders } from './pages/Orders'
 import { Settings } from './pages/Settings'
 import { Tables } from './pages/Tables'
+import { SalesCounter } from './pages/SalesCounter'
 import type { PageId } from './types'
 import { clearToast, showToast } from './utils/toast'
 
@@ -20,12 +21,14 @@ type OrdersView = 'list' | 'details'
 type OffersView = 'list' | 'create'
 type ExpensesView = 'list' | 'add'
 type InvoicesView = 'list' | 'generate' | 'detail'
+type CounterMode = 'dine' | 'takeaway'
 
 function App() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
   const [isLoading, setIsLoading] = useState(true)
   const [inventorySearch, setInventorySearch] = useState('')
   const [inventoryView, setInventoryView] = useState<InventoryView>('list')
+  const [inventoryProducts, setInventoryProducts] = useState(initialProducts)
   const [ordersSearch, setOrdersSearch] = useState('')
   const [ordersView, setOrdersView] = useState<OrdersView>('list')
   const [offersSearch, setOffersSearch] = useState('')
@@ -34,6 +37,7 @@ function App() {
   const [expensesView, setExpensesView] = useState<ExpensesView>('list')
   const [invoicesSearch, setInvoicesSearch] = useState('')
   const [invoicesView, setInvoicesView] = useState<InvoicesView>('list')
+  const [counterMode, setCounterMode] = useState<CounterMode | null>(null)
   const [globalToast, setGlobalToast] = useState<{ message: string; tone: ToastTone } | null>(null)
 
   useEffect(() => {
@@ -84,7 +88,18 @@ function App() {
           <Toast message={globalToast.message} tone={globalToast.tone} />
         </div>
       )}
-      <AppShell
+      {counterMode ? (
+        <SalesCounter
+          mode={counterMode}
+          inventoryProducts={inventoryProducts}
+          onExit={() => setCounterMode(null)}
+          onNavigate={(page) => {
+            setCounterMode(null)
+            setActivePage(page)
+          }}
+        />
+      ) : (
+        <AppShell
         activePage={activePage}
         inventoryView={inventoryView}
         inventorySearch={inventorySearch}
@@ -155,6 +170,10 @@ function App() {
         onInvoicesShare={() => window.dispatchEvent(new Event('invoices:share'))}
         onInvoicesDownload={() => window.dispatchEvent(new Event('invoices:download'))}
         onInvoicesSearchChange={setInvoicesSearch}
+        onOpenCounter={(mode) => {
+          clearToast()
+          setCounterMode(mode)
+        }}
         onNavigate={(page) => {
           clearToast()
           setActivePage(page)
@@ -178,6 +197,8 @@ function App() {
         {activePage === 'dashboard' && <Dashboard />}
         {activePage === 'inventory' && (
           <Inventory
+            products={inventoryProducts}
+            setProducts={setInventoryProducts}
             searchQuery={inventorySearch}
             view={inventoryView}
             onViewChange={setInventoryView}
@@ -215,6 +236,7 @@ function App() {
         {activePage === 'settings' && <Settings />}
         {activePage === 'shops' && <ManageShops />}
       </AppShell>
+      )}
     </>
   )
 }

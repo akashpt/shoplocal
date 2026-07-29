@@ -30,6 +30,7 @@ import {
   Printer,
   ReceiptText,
   RefreshCw,
+  RotateCw,
   Search,
   Settings,
   Share2,
@@ -83,6 +84,7 @@ export type AppIconName =
   | 'printer'
   | 'receipt'
   | 'refresh'
+  | 'rotate'
   | 'rupee'
   | 'search'
   | 'settings'
@@ -134,6 +136,7 @@ const icons: Record<AppIconName, LucideIcon> = {
   printer: Printer,
   receipt: ReceiptText,
   refresh: RefreshCw,
+  rotate: RotateCw,
   rupee: IndianRupee,
   search: Search,
   settings: Settings,

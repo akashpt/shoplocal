@@ -37,6 +37,7 @@ type AppShellProps = {
   onInvoicesShare: () => void
   onInvoicesDownload: () => void
   onInvoicesSearchChange: (value: string) => void
+  onOpenCounter: (mode: 'dine' | 'takeaway') => void
   onNavigate: (page: PageId) => void
 }
 
@@ -75,6 +76,7 @@ export function AppShell({
   onInvoicesShare,
   onInvoicesDownload,
   onInvoicesSearchChange,
+  onOpenCounter,
   onNavigate,
 }: AppShellProps) {
   return (
@@ -112,6 +114,7 @@ export function AppShell({
       onInvoicesShare={onInvoicesShare}
       onInvoicesDownload={onInvoicesDownload}
       onInvoicesSearchChange={onInvoicesSearchChange}
+      onOpenCounter={onOpenCounter}
       onNavigate={onNavigate}
     >
       {children}

@@ -51,6 +51,11 @@ const navItems: Array<{ id: PageId; label: string }> = [
   { id: 'shops', label: 'Manage Shops' },
 ]
 
+const notifications = [
+  { title: 'Low stock alert', message: '26 items need restocking' },
+  { title: 'Offer performance', message: 'SAVE20 reached 48 uses' },
+]
+
 export function Header({
   activePage,
   inventoryView,
@@ -334,18 +339,21 @@ export function Header({
             onClick={() => toggleMenu('notifications')}
           >
             <AppIcon name="bell" />
+            {notifications.length > 0 && (
+              <span className="notification-badge" aria-label={`${notifications.length} notifications`}>
+                {notifications.length > 99 ? '99+' : notifications.length}
+              </span>
+            )}
           </button>
           {openMenu === 'notifications' && (
             <div className="dropdown-panel notification-dropdown">
               <strong>Notifications</strong>
-              <button type="button">
-                <span>Low stock alert</span>
-                <small>26 items need restocking</small>
-              </button>
-              <button type="button">
-                <span>Offer performance</span>
-                <small>SAVE20 reached 48 uses</small>
-              </button>
+              {notifications.map((notification) => (
+                <button type="button" key={notification.title}>
+                  <span>{notification.title}</span>
+                  <small>{notification.message}</small>
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -360,13 +368,20 @@ export function Header({
           </button>
           {openMenu === 'profile' && (
             <div className="dropdown-panel profile-dropdown">
-              <strong>Anita Mani</strong>
-              <small>Store manager</small>
+              <div className="profile-menu-card">
+                <span className="profile-menu-avatar">AM</span>
+                <div>
+                  <strong>Anita Mani</strong>
+                  <small>Store manager</small>
+                  <em>Store Open</em>
+                </div>
+              </div>
               <button className="mobile-menu-action" type="button" onClick={onAddProduct}>Add Product</button>
               <button className="mobile-menu-action" type="button" onClick={onAddExpense}>Add Expense</button>
               <button className="mobile-menu-action primary" type="button" onClick={onCreateOffer}>Create Offer</button>
-              <button type="button">Manage profile</button>
-              <button type="button">Sign out</button>
+              <button type="button"><AppIcon name="user" /> Manage profile</button>
+              <button type="button"><AppIcon name="shops" /> Switch shop</button>
+              <button className="danger-menu-action" type="button"><AppIcon name="x" /> Sign out</button>
             </div>
           )}
         </div>

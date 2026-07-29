@@ -173,7 +173,7 @@ export function Tables() {
 
   function addTableFromPrompt() {
     const nextNumber = tables.length + 1
-    const placement = pendingPlacement || { kind: selectedKind, x: 54, y: 48, col: 8, row: 5, rotate: selectedKind === 'wide' ? -14 : 0 }
+    const placement = pendingPlacement || { kind: selectedKind, x: 54, y: 48, col: 8, row: 5, rotate: 0 }
     const nextId = `new-${Date.now()}`
     updateActiveTables((currentTables) => [
       ...currentTables,
@@ -205,7 +205,7 @@ export function Tables() {
 
   function placeTable(kind: TableKind, x: number, y: number, col = 8, row = 5) {
     setSelectedKind(kind)
-    setPendingPlacement({ kind, x, y, col, row, rotate: kind === 'wide' ? -14 : 0 })
+    setPendingPlacement({ kind, x, y, col, row, rotate: 0 })
     setIsNamePromptOpen(true)
   }
 
@@ -214,7 +214,7 @@ export function Tables() {
   }
 
   function setTableRotation(id: string, angle: number) {
-    const normalizedAngle = ((Math.round(angle) % 360) + 360) % 360
+    const normalizedAngle = ((Math.round(angle / 90) * 90) % 360 + 360) % 360
     updateActiveTables((currentTables) =>
       currentTables.map((table) => (table.id === id ? { ...table, rotate: normalizedAngle } : table)),
     )
@@ -757,8 +757,8 @@ function TableLayoutModal({
                       onSelect={() => onSelectTable(table.id)}
                     />
                   ))}
-                  <div className="delete-drop" onDragOver={(event) => event.preventDefault()} onDrop={handleDeleteDrop}><TrashIcon />Drag here to delete</div>
                 </div>
+                <div className="delete-drop" onDragOver={(event) => event.preventDefault()} onDrop={handleDeleteDrop}><TrashIcon />Drag here to delete</div>
                 <div className="modal-table-bottom-actions">
                   <button className={bottomMode === 'select' ? 'active' : ''} type="button" onClick={() => onBottomModeChange('select')}>Table Select</button>
                   {selectedTableName && <button type="button" onClick={onClearSelectedTable}>Table {selectedTableName} <span>x</span></button>}
@@ -769,41 +769,14 @@ function TableLayoutModal({
                     <label className="manual-rotate-control">
                       <span>Rotate</span>
                       <button
+                        aria-label="Rotate table 90 degrees"
+                        className="rotate-single-button"
+                        title="Rotate 90 degrees"
                         type="button"
-                        aria-label="Rotate table left"
-                        onClick={() => {
-                          onSetTableRotation(selectedTableId, selectedTableRotation - 15)
-                        }}
+                        onClick={() => onSetTableRotation(selectedTableId, selectedTableRotation + 90)}
                       >
-                        -
+                        <AppIcon name="rotate" />
                       </button>
-                      <input
-                        type="range"
-                        min="0"
-                        max="359"
-                        value={selectedTableRotation}
-                        onChange={(event) => {
-                          onSetTableRotation(selectedTableId, Number(event.target.value))
-                        }}
-                      />
-                      <button
-                        type="button"
-                        aria-label="Rotate table right"
-                        onClick={() => {
-                          onSetTableRotation(selectedTableId, selectedTableRotation + 15)
-                        }}
-                      >
-                        +
-                      </button>
-                      <input
-                        type="number"
-                        min="0"
-                        max="359"
-                        value={selectedTableRotation}
-                        onChange={(event) => {
-                          onSetTableRotation(selectedTableId, Number(event.target.value))
-                        }}
-                      />
                     </label>
                   )}
                   <button className={bottomMode === 'reservation' ? 'active' : ''} type="button" onClick={() => onBottomModeChange('reservation')}>Info Reservation</button>
@@ -897,7 +870,7 @@ function EditTabs({ step, onStepChange }: { step: ModalStep; onStepChange: (step
 }
 
 function GridBlocks() {
-  return <>{Array.from({ length: 140 }).map((_, index) => <i key={index} data-cell-index={index}></i>)}</>
+  return <>{Array.from({ length: 196 }).map((_, index) => <i key={index} data-cell-index={index}></i>)}</>
 }
 
 function DraggableTablePreview({

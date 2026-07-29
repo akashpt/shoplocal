@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { AppIcon } from '../components/ui/AppIcon'
@@ -10,7 +11,7 @@ import { ToggleSwitch } from '../components/ui/ToggleSwitch'
 import heroImage from '../assets/hero.png'
 import { showToast } from '../utils/toast'
 
-type Product = {
+export type Product = {
   name: string
   id: string
   category: string
@@ -31,7 +32,7 @@ type UploadedFile = {
   type: string
 }
 
-const initialProducts: Product[] = [
+export const initialProducts: Product[] = [
   { name: 'Tata Salt 1kg', id: 'PRD-0041', category: 'Grocery', price: 'Rs.28', stock: 48, rating: 4 },
   { name: 'Dairy Milk 60g', id: 'PRD-0045', category: 'Chocolates', price: 'Rs.50', stock: 120, rating: 4 },
   { name: 'Amul Butter 500g', id: 'PRD-0042', category: 'Dairy', price: 'Rs.150', stock: 30, rating: 4 },
@@ -45,6 +46,8 @@ const initialProducts: Product[] = [
 ]
 
 type InventoryProps = {
+  products: Product[]
+  setProducts: Dispatch<SetStateAction<Product[]>>
   onViewChange: (view: 'list' | 'add' | 'profile') => void
   searchQuery: string
   view: 'list' | 'add' | 'profile'
@@ -207,8 +210,7 @@ function FilterDropdown({
   )
 }
 
-export function Inventory({ onViewChange, searchQuery, view }: InventoryProps) {
-  const [products, setProducts] = useState(initialProducts)
+export function Inventory({ products, setProducts, onViewChange, searchQuery, view }: InventoryProps) {
   const [profileProductId, setProfileProductId] = useState(initialProducts[0].id)
   const [localSearchQuery, setLocalSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All Categories')

@@ -587,11 +587,29 @@ function InvoiceDetailView({
             <span>Amount chargeable (in words)</span>
             <strong>E. & O.E&nbsp;&nbsp; Three Hundred Thirty Seven Only</strong>
           </div>
-          <div className="invoice-declaration">
-            <h2>Declaration</h2>
-            <p>We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</p>
-            <span></span>
-            <small>Authorised Signatory</small>
+          <div className="invoice-bottom-section">
+            <div className="invoice-declaration">
+              <h2>Declaration</h2>
+              <p>We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</p>
+            </div>
+            <div className="invoice-terms">
+              <h2>Terms &amp; Conditions</h2>
+              <ul>
+                <li>Goods once sold will not be taken back without a valid bill.</li>
+                <li>Warranty and service claims are subject to brand policy.</li>
+                <li>Payment disputes must be reported within 7 days.</li>
+              </ul>
+            </div>
+            <div className="invoice-qr-block">
+              <span className="invoice-qr-code" aria-label="Invoice QR code">
+                {Array.from({ length: 49 }).map((_, index) => <i key={index}></i>)}
+              </span>
+              <small>Scan for invoice</small>
+            </div>
+            <div className="invoice-signatory">
+              <span></span>
+              <small>Authorised Signatory</small>
+            </div>
           </div>
           <p className="invoice-generated-note">This is a Computer Generated Invoice</p>
         </div>
